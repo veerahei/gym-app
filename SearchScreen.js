@@ -1,10 +1,12 @@
-import { Text, View, StyleSheet } from "react-native";
+import { View, StyleSheet } from "react-native";
+import { Button, Text } from "react-native-paper";
+
 
 export default function SearchScreen() {
 
     return (
         <View style={styles.container}>
-            <Text>This is the search screen</Text>
+            <Text variant="displaySmall">This is the search screen</Text>
         </View>
     )
 }

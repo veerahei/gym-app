@@ -1,9 +1,11 @@
-import { View, Text, StyleSheet } from "react-native"
+import { View, StyleSheet } from "react-native"
+import { Button, Text } from "react-native-paper";
 
 export default function HomeScreen() {
     return (
-        <View style={ styles.container }>
-            <Text>This is the home screen</Text>
+        <View style={styles.container}>
+            <Text variant="bodyLarge">This is the home screen</Text>
+            <Button mode="contained" icon="search-web">Test</Button>
         </View>
     )
 }
