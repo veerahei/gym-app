@@ -1,11 +1,42 @@
-import { View, StyleSheet } from "react-native"
-import { Button, Text } from "react-native-paper";
+import { View, FlatList, StyleSheet } from "react-native"
+import { Button, Text, Card } from "react-native-paper";
+import { useEffect, useState } from "react";
+import { getDatabase, onValue, ref } from "firebase/database";
+import { app } from './firebaseConfig';
 
 export default function HomeScreen() {
+    const [plans, setPlans] = useState([]);
+    const db = getDatabase(app);
+
+    //Read data from referred table form data base, here from plans table/node
+    useEffect(() => {
+        const plansRef = ref(db, 'plans/');
+        onValue(plansRef, (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                setPlans(Object.values(data));
+            } else {
+                setPlans([]);
+            }
+        })
+    }, []);
+
+    console.log(plans);
+
+    //Show user's workoutplans in a list
     return (
         <View style={styles.container}>
-            <Text variant="bodyLarge">This is the home screen</Text>
-            <Button mode="contained" icon="search-web">Test</Button>
+            <Text variant="bodyLarge">Your workout plans</Text>
+            <FlatList
+                style={styles.list}
+                data={plans}
+                renderItem={({ item }) =>
+                    <Card style={styles.card}>
+                        <Card.Title title={item.planName} />
+                    </Card>
+                }
+            ></FlatList>
+
         </View>
     )
 }
@@ -18,4 +49,10 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
     },
+    list: {
+        width: '90%',
+    },
+    card: {
+        marginBottom: 10,
+    }
 });
