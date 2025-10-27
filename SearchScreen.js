@@ -2,8 +2,6 @@ import { useState } from "react";
 import { View, StyleSheet, FlatList } from "react-native";
 import { Button, Text, TextInput, Card } from "react-native-paper";
 
-
-
 export default function SearchScreen() {
 
     const [input, setInput] = useState("");

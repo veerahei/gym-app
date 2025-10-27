@@ -4,9 +4,16 @@ import { useEffect, useState } from "react";
 import { getDatabase, onValue, ref } from "firebase/database";
 import { app } from './firebaseConfig';
 
+import { useNavigation } from "@react-navigation/native";
+
+
+
+
 export default function HomeScreen() {
     const [plans, setPlans] = useState([]);
     const db = getDatabase(app);
+
+    const navigation = useNavigation();
 
     //Read data from referred table form data base, here from plans table/node
     useEffect(() => {
@@ -27,12 +34,20 @@ export default function HomeScreen() {
     return (
         <View style={styles.container}>
             <Text variant="bodyLarge">Your workout plans</Text>
+
+            <Button
+                onPress={() => navigation.navigate('Test')}
+            >
+                Add new workout plan
+            </Button>
+
             <FlatList
                 style={styles.list}
                 data={plans}
                 renderItem={({ item }) =>
                     <Card style={styles.card}>
                         <Card.Title title={item.planName} />
+                        <Card.Content><Text>{item.exercises[0].name}</Text></Card.Content>
                     </Card>
                 }
             ></FlatList>

@@ -4,6 +4,7 @@ import { getDatabase, push, ref, } from "firebase/database";
 import { app } from './firebaseConfig';
 import { useState } from "react";
 
+
 export default function Test() {
     const [workoutPlan, setWorkoutPlan] = useState({
         planName: "",
@@ -17,10 +18,12 @@ export default function Test() {
     });
 
     const db = getDatabase(app);
+   
 
 
     //Add one exercise to a workoutplan
     function addExercise() {
+
         setWorkoutPlan({ ...workoutPlan, exercises: [...workoutPlan.exercises, exercise] });
 
         setExercise({
@@ -32,10 +35,12 @@ export default function Test() {
 
     console.log(workoutPlan)
 
-    //Save (write) workout plan to database
+    //Save (write) workout plan to database and go back to home screen
     function addWorkoutPlan() {
         console.log("in the function");
         push(ref(db, 'plans/'), workoutPlan);
+
+       
     }
 
     return (
