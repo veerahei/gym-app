@@ -5,6 +5,7 @@ import { getDatabase, onValue, ref } from "firebase/database";
 import { app } from './firebaseConfig';
 
 import { useNavigation } from "@react-navigation/native";
+import { getAuth, signOut } from "firebase/auth";
 
 
 
@@ -12,6 +13,7 @@ import { useNavigation } from "@react-navigation/native";
 export default function HomeScreen() {
     const [plans, setPlans] = useState([]);
     const db = getDatabase(app);
+    const auth = getAuth(app)
 
     const navigation = useNavigation();
 
@@ -30,9 +32,20 @@ export default function HomeScreen() {
 
     console.log(plans);
 
+    const handleSignOut = () => {
+        signOut(auth)
+            .then(() => (navigation.replace("Login")))
+            .catch(error => console.log(error.message))
+
+    }
+
     //Show user's workoutplans in a list
     return (
         <View style={styles.container}>
+
+            <Button
+                onPress={handleSignOut}
+            >Sign out</Button>
             <Text variant="bodyLarge">Your workout plans</Text>
 
             <Button

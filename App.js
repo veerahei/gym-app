@@ -4,15 +4,17 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import HomeScreen from './HomeScreen';
 import SearchScreen from './SearchScreen';
+import LoginScreen from './LoginScreen';
 import Test from './Test';
 
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+
 
 //Navigation is declared in this component
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
-function TabNavigator() {
+function HomeTabs() {
   return (
     <Tab.Navigator
 
@@ -49,11 +51,14 @@ function StackNavigator() {
   );
 }
 
-//The root component calls both tab snd stack navigator components and wraps them in navigationcontainer
+//The root component has stack navigator to show either login screen or the app main screen with tab navigation
 export default function App() {
   return (
     <NavigationContainer>
-      <TabNavigator />
+      <Stack.Navigator>
+        <Stack.Screen name="Login" component={LoginScreen} />
+        <Stack.Screen name="Home" component={HomeTabs} options={{ headerShown: false }} />
+      </Stack.Navigator>
     </NavigationContainer>
   );
 }
