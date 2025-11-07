@@ -1,4 +1,4 @@
-import { View } from "react-native"
+import { View, StyleSheet } from "react-native"
 import { useState, useEffect } from "react";
 import { Text, TextInput, Button } from "react-native-paper";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
@@ -19,7 +19,7 @@ export default function LoginScreen() {
     useEffect(() => {
         onAuthStateChanged(auth, (user) => {
             if (user) {
-                navigation.replace("Home") 
+                navigation.replace("Home")
             } else {
                 // User is signed out
                 // ...
@@ -41,7 +41,7 @@ export default function LoginScreen() {
     }
 
     const handleLogin = () => {
-        console.log("loginissä")
+
         signInWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
                 // Signed in 
@@ -54,24 +54,39 @@ export default function LoginScreen() {
     }
 
     return (
-        <View>
-            <Text>Login screen</Text>
-            <TextInput
-                label="Email address"
-                value={email}
-                onChangeText={input => setEmail(input)}
-            />
-            <TextInput
-                label="Password"
-                value={password}
-                onChangeText={input => setPassword(input)}
-            />
-            <Button
-                onPress={handleLogin}
-            >Login</Button>
-            <Button
-                onPress={handleRegistration}
-            >Register</Button>
+        <View style={styles.container}>
+
+            <View style={styles.fields}>
+                <TextInput
+                    label="Email address"
+                    value={email}
+                    onChangeText={input => setEmail(input)}
+                />
+                <TextInput
+                    label="Password"
+                    value={password}
+                    onChangeText={input => setPassword(input)}
+                />
+                <Button
+                    onPress={handleLogin}
+                >Login</Button>
+                <Button
+                    onPress={handleRegistration}
+                >Register</Button>
+            </View>
         </View>
     );
 }
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#fff',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    fields: {
+        width: '85%',
+        gap: 10
+    }
+})
