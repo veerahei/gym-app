@@ -72,7 +72,7 @@ export default function HomeScreen() {
                 renderItem={({ item }) =>
                     <Card style={styles.card}>
 
-                        <Card.Title title={item.activityName} subtitle={`${item.date} Duration: ${item.duration}`} />
+                        <Card.Title title={item.activityName} subtitle={`${item.activityDate} Duration: ${item.duration}`} />
                         <Card.Actions>
                             <IconButton icon="trash-can-outline" mode="contained" onPress={() => handleDelete(item.id)}></IconButton>
                         </Card.Actions>

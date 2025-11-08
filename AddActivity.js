@@ -2,9 +2,11 @@ import { TextInput, Button, Text } from "react-native-paper"
 import { Alert, View, StyleSheet } from "react-native"
 import { getDatabase, push, ref, } from "firebase/database";
 import { app } from './firebaseConfig';
-import { useState } from "react";
+import { act, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { getAuth } from "firebase/auth";
+
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 
 
@@ -12,17 +14,39 @@ export default function AddActivity() {
 
     const [activity, setActivity] = useState({
         activityName: "",
-        date: "",
+        activityDate: "",
         duration: "",
         description: ""
     });
+
+    const [date, setDate] = useState(new Date());
+    const [showPicker, setShowPicker] = useState(false);
 
     const db = getDatabase(app);
     const navigation = useNavigation();
     const auth = getAuth(app)
 
     const user = auth.currentUser;
-    console.log(user.uid)
+
+    console.log(activity);
+    const toggleDatePicker = () => {
+        setShowPicker(!showPicker);
+
+    }
+
+    const onChange = ({ type }, selectedDate) => {
+        if (type == "set") {
+            const currentDate = selectedDate;
+            setDate(currentDate);
+        } else {
+            toggleDatePicker();
+        }
+    }
+
+    const confirmDate = () => {
+        setActivity({ ...activity, activityDate: date.toDateString() })
+        toggleDatePicker();
+    }
 
     //Save (write) workout plan to database and go back to home screen
     function addActivity() {
@@ -32,7 +56,6 @@ export default function AddActivity() {
         if (currentUser) {
             push(ref(db, `users/${currentUser.uid}/activities`), activity);
         }
-
 
         Alert.alert("New activity added")
         navigation.popToTop();
@@ -52,10 +75,32 @@ export default function AddActivity() {
                     value={activity.activityName}
                     onChangeText={input => setActivity({ ...activity, activityName: input })}
                 />
+
+                {showPicker && (
+                    <View>
+                        <DateTimePicker
+                            mode="date"
+                            display="spinner"
+                            value={date}
+                            onChange={onChange}
+                            style={styles.datePicker}
+                        />
+                        <View style={{ flexDirection: "row", justifyContent: "center", gap: 45 }}>
+                            <Button onPress={toggleDatePicker}>Cancel</Button>
+                            <Button onPress={confirmDate}>Confirm</Button>
+                        </View>
+                    </View>
+                )}
+
+                <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
+
+                </View>
                 <TextInput
                     label="Date"
-                    value={activity.date}
+                    value={activity.activityDate}
                     onChangeText={input => setActivity({ ...activity, date: input })}
+                    editable={false}
+                    onPressIn={toggleDatePicker}
                 />
                 <TextInput
                     label="Time spent"
@@ -91,5 +136,9 @@ const styles = StyleSheet.create({
         width: "90%",
         gap: 10,
         marginBottom: 30
+    },
+    datePicker: {
+        height: 120,
+        marginTop: -10,
     }
 }); 
