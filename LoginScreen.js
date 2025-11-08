@@ -11,6 +11,7 @@ export default function LoginScreen() {
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [secureTextEntry, setSecureTextEntry] = useState(true);
 
     const auth = getAuth(app);
 
@@ -19,7 +20,7 @@ export default function LoginScreen() {
     useEffect(() => {
         onAuthStateChanged(auth, (user) => {
             if (user) {
-                navigation.replace("Home")
+                navigation.replace("MainTabs")
             } else {
                 // User is signed out
                 // ...
@@ -63,6 +64,8 @@ export default function LoginScreen() {
                     onChangeText={input => setEmail(input)}
                 />
                 <TextInput
+                    secureTextEntry={secureTextEntry}
+                    right={<TextInput.Icon icon="eye" onPress={() => setSecureTextEntry(!secureTextEntry)} />}
                     label="Password"
                     value={password}
                     onChangeText={input => setPassword(input)}

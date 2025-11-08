@@ -5,7 +5,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import HomeScreen from './HomeScreen';
 import SearchScreen from './SearchScreen';
 import LoginScreen from './LoginScreen';
-import Test from './AddActivity';
+import AddActivity from './AddActivity';
 
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
@@ -22,7 +22,7 @@ function HomeTabs() {
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
 
-          if (route.name === 'Home') {
+          if (route.name === 'MainHome') {
             iconName = 'home'
           } else if (route.name === 'Search') {
             iconName = 'search-web'
@@ -35,7 +35,7 @@ function HomeTabs() {
       })}
     >
 
-      <Tab.Screen name='Home' component={StackNavigator} options={{ headerShown: false }} />
+      <Tab.Screen name='MainHome' component={StackNavigator} options={{ headerShown: false }} />
       <Tab.Screen name='Search' component={SearchScreen} />
     </Tab.Navigator>
 
@@ -46,7 +46,7 @@ function StackNavigator() {
   return (
     <Stack.Navigator >
       <Stack.Screen name='HomeScreen' component={HomeScreen} />
-      <Stack.Screen name='Test' component={Test} />
+      <Stack.Screen name='AddActivity' component={AddActivity} options={{ title: "", headerTintColor: '#7E57C2' }} />
     </Stack.Navigator>
   );
 }
@@ -57,7 +57,7 @@ export default function App() {
     <NavigationContainer>
       <Stack.Navigator>
         <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="Home" component={HomeTabs} options={{ headerShown: false }} />
+        <Stack.Screen name="MainTabs" component={HomeTabs} options={{ headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer>
   );

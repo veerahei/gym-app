@@ -1,5 +1,5 @@
 import { View, FlatList, StyleSheet } from "react-native"
-import { Button, Text, Card } from "react-native-paper";
+import { Button, Text, Card, IconButton, MD3Colors } from "react-native-paper";
 import { useEffect, useState } from "react";
 import { getDatabase, onValue, ref, remove } from "firebase/database";
 import { app } from './firebaseConfig';
@@ -53,20 +53,30 @@ export default function HomeScreen() {
             >Sign out
             </Button>
 
+            <View style={styles.actions}>
+                <Button
+                    onPress={() => navigation.navigate('AddActivity')}
+                    mode="contained"
+                    icon="plus-circle"
+                >
+                    Add new activity
+                </Button>
+            </View>
 
-            <Button
-                onPress={() => navigation.navigate('Test')}
-            >
-                Add new activity
-            </Button>
+
+            <Text>Your latest activities</Text>
 
             <FlatList
                 style={styles.list}
                 data={activities}
                 renderItem={({ item }) =>
                     <Card style={styles.card}>
-                        <Card.Title title={item.activityName} />
-                        <Button onPress={() => handleDelete(item.id)}>Delete</Button>
+
+                        <Card.Title title={item.activityName} subtitle={`${item.date} Duration: ${item.duration}`} />
+                        <Card.Actions>
+                            <IconButton icon="trash-can-outline" mode="contained" onPress={() => handleDelete(item.id)}></IconButton>
+                        </Card.Actions>
+
                     </Card>
                 }
             ></FlatList>
@@ -83,11 +93,13 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
     },
+    actions: {
+        marginBottom: 40,
+    },
     list: {
         width: '90%',
     },
     card: {
         marginBottom: 10,
-
-    }
+    },
 });
