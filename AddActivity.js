@@ -59,9 +59,7 @@ export default function AddActivity() {
 
         Alert.alert("New activity added")
         navigation.popToTop();
-
     }
-
 
 
     return (
@@ -76,8 +74,9 @@ export default function AddActivity() {
                     onChangeText={input => setActivity({ ...activity, activityName: input })}
                 />
 
-                {showPicker && (
+                {showPicker ? (
                     <View>
+                        <Text>Date</Text>
                         <DateTimePicker
                             mode="date"
                             display="spinner"
@@ -90,18 +89,16 @@ export default function AddActivity() {
                             <Button onPress={confirmDate}>Confirm</Button>
                         </View>
                     </View>
+                ) : (
+                    <TextInput
+                        label="Date"
+                        value={activity.activityDate}
+                        onChangeText={input => setActivity({ ...activity, date: input })}
+                        editable={false}
+                        onPressIn={toggleDatePicker}
+                    />
                 )}
 
-                <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
-
-                </View>
-                <TextInput
-                    label="Date"
-                    value={activity.activityDate}
-                    onChangeText={input => setActivity({ ...activity, date: input })}
-                    editable={false}
-                    onPressIn={toggleDatePicker}
-                />
                 <TextInput
                     label="Time spent"
                     value={activity.duration}
@@ -137,8 +134,5 @@ const styles = StyleSheet.create({
         gap: 10,
         marginBottom: 30
     },
-    datePicker: {
-        height: 120,
-        marginTop: -10,
-    }
+
 }); 
