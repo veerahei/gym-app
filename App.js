@@ -1,6 +1,7 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { PaperProvider } from 'react-native-paper';
 
 import HomeScreen from './HomeScreen';
 import SearchScreen from './SearchScreen';
@@ -36,7 +37,7 @@ function HomeTabs() {
     >
 
       <Tab.Screen name='MainHome' component={StackNavigator} options={{ headerShown: false }} />
-      <Tab.Screen name='Search' component={SearchScreen} />
+      <Tab.Screen name='Search' component={SearchScreen} options={{ headerShown: false }} />
     </Tab.Navigator>
 
   );
@@ -54,12 +55,14 @@ function StackNavigator() {
 //The root component has stack navigator to show either login screen or the app main screen with tab navigation
 export default function App() {
   return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="MainTabs" component={HomeTabs} options={{ headerShown: false }} />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <PaperProvider>
+      <NavigationContainer>
+        <Stack.Navigator>
+          <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
+          <Stack.Screen name="MainTabs" component={HomeTabs} options={{ headerShown: false }} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </PaperProvider>
   );
 }
 

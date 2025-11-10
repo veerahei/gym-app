@@ -91,13 +91,14 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#fff',
         alignItems: 'center',
-        justifyContent: 'center',
+  
     },
     actions: {
         marginBottom: 40,
     },
     list: {
-        width: '90%',
+        width: '100%',
+        paddingHorizontal: '5%'
     },
     card: {
         marginBottom: 10,

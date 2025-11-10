@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { View, StyleSheet, FlatList } from "react-native";
-import { Button, Text, TextInput, Card } from "react-native-paper";
+import { View, StyleSheet, FlatList, Image } from "react-native";
+import { Button, Text, TextInput, Card, Searchbar } from "react-native-paper";
 
 export default function SearchScreen() {
 
@@ -25,8 +25,9 @@ export default function SearchScreen() {
 
     return (
         <View style={styles.container} >
-            <TextInput style={styles.input}
-                label="Search exercises"
+            <Text style={{ marginTop: 100 }}>Search inspiration for your next workout</Text>
+            <Searchbar style={styles.input}
+                placeholder=""
                 value={input}
                 onChangeText={text => setInput(text)}
             />
@@ -37,15 +38,24 @@ export default function SearchScreen() {
                 Search
             </Button>
             <FlatList
-                style={{ width: '90%' }}
+                style={{
+                    marginTop: 10, width: '100%',
+                    paddingHorizontal: '5%'
+                }}
                 data={exercises}
                 renderItem={({ item }) =>
-                    <Card>
-                        <Card.Cover source={{ uri: item.gifUrl }} />
+                    <Card style={{ marginBottom: 20, flex: 1, }}>
+
                         <Card.Title title={item.name} />
-                        <Card.Content>
-                            <Text>{item.instructions}</Text>
-                        </Card.Content>
+                        <View style={{ backgroundColor: "white", marginHorizontal: 20, alignItems: "center", justifyContent: 'center', marginBottom: 20, borderRadius: 10, }}>
+                            <Image
+                                source={{ uri: item.gifUrl }}
+                                style={{ width: "100%", height: 200, resizeMode: "contain", }}
+                            >
+
+                            </Image>
+                        </View>
+
                     </Card>
                 }
             />
