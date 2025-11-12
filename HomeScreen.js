@@ -31,7 +31,6 @@ export default function HomeScreen() {
         }
     }, []);
 
-    console.log(activities);
 
     const handleSignOut = () => {
         signOut(auth)

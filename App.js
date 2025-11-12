@@ -7,8 +7,10 @@ import HomeScreen from './HomeScreen';
 import SearchScreen from './SearchScreen';
 import LoginScreen from './LoginScreen';
 import AddActivity from './AddActivity';
+import ChartScreen from './ChartScreen';
 
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+
 
 
 //Navigation is declared in this component
@@ -38,6 +40,7 @@ function HomeTabs() {
 
       <Tab.Screen name='MainHome' component={StackNavigator} options={{ headerShown: false }} />
       <Tab.Screen name='Search' component={SearchScreen} options={{ headerShown: false }} />
+      <Tab.Screen name='Charts' component={ChartScreen} />
     </Tab.Navigator>
 
   );
