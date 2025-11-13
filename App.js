@@ -9,6 +9,8 @@ import LoginScreen from './LoginScreen';
 import AddActivity from './AddActivity';
 import ChartScreen from './ChartScreen';
 
+
+
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
 

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { View, StyleSheet } from "react-native"
+import { View, StyleSheet, ScrollView } from "react-native"
 import { Text, SegmentedButtons, Button } from "react-native-paper"
-import { LineChart, PieChart } from 'react-native-chart-kit';
+import { BarChart, PieChart } from 'react-native-chart-kit';
 import { Dimensions } from 'react-native';
 import { getDatabase, ref, onValue } from "firebase/database";
 import { app } from './firebaseConfig';
@@ -13,6 +13,11 @@ export default function ChartScreen() {
 
     const [activitiesData, setActivitiesData] = useState([]);
     const [pieChartData, setPieChartData] = useState([]);
+    const [lineChartData, setLineChartData] = useState({
+        labels: [],
+        datasets: [{ data: [] }]
+    });
+
 
     const auth = getAuth(app)
     const db = getDatabase(app);
@@ -64,14 +69,38 @@ export default function ChartScreen() {
                 setPieChartData(formattedData)
                 console.log("Pie chart data:", formattedData);
 
+                //Paljonko aikaa käytetty Lähde: https://www.geeksforgeeks.org/javascript/count-occurrences-of-all-items-in-an-array-in-javascript/
+                let totalTime = activityList.reduce((acc, curr) => {
+                    acc[curr.activityName] = (acc[curr.activityName] || 0) + Number(curr.duration);
+                    return acc;
+                }, {})
+
+                console.log(totalTime)
+
+                const chartData = {
+                    labels: Object.keys(totalTime),
+                    datasets: [
+                        {
+                            data: Object.values(totalTime),
+                        },
+                    ],
+                };
+
+                setLineChartData(chartData)
+
+                console.log(chartData.labels)
+
             })
         }
     }, []);
 
 
+    const labelWidth = 80; // Width of each label
+    const chartWidth = lineChartData.labels.length * labelWidth;
+
     return (
         <View style={styles.container}>
-            <Text variant="headlineMedium">How you're moving </Text>
+            <Text variant="headlineMedium">Your activity profile</Text>
             <PieChart
                 data={pieChartData}
                 width={Dimensions.get("window").width} // from react-native
@@ -84,6 +113,34 @@ export default function ChartScreen() {
                 paddingLeft={"15"}
                 absolute={false} // Näyttääkö prosentteina vai tod. lukuina
             />
+            <ScrollView horizontal={true}>
+                <BarChart
+                    data={lineChartData}
+                    width={chartWidth}
+                    height={220}
+                    chartConfig={{
+                        backgroundColor: "#7E57C2",
+                        backgroundGradientFrom: "#7E57C2",
+                        backgroundGradientTo: "#7E57C2",
+                        decimalPlaces: 2, // optional, defaults to 2dp
+                        color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+                        labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+                        style: {
+                            borderRadius: 16
+                        },
+                        propsForDots: {
+                            r: "6",
+                            strokeWidth: "2",
+                            stroke: "#ffa726"
+                        }
+                    }}
+                    bezier
+                    style={{
+                        marginVertical: 8,
+                        borderRadius: 16
+                    }}
+                />
+            </ScrollView>
         </View>
 
     )
