@@ -9,15 +9,21 @@ import LoginScreen from './LoginScreen';
 import AddActivity from './AddActivity';
 import ChartScreen from './ChartScreen';
 
-
-
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
-
-
 
 //Navigation is declared in this component
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
+
+
+function StackNavigator() {
+  return (
+    <Stack.Navigator >
+      <Stack.Screen name='HomeScreen' component={HomeScreen} />
+      <Stack.Screen name='AddActivity' component={AddActivity} options={{ title: "", headerTintColor: '#7E57C2' }} />
+    </Stack.Navigator>
+  );
+}
 
 function HomeTabs() {
   return (
@@ -30,13 +36,14 @@ function HomeTabs() {
           if (route.name === 'MainHome') {
             iconName = 'home'
           } else if (route.name === 'Search') {
-            iconName = 'search-web'
+            iconName = 'search-web' 
+          } else if (route.name === "Charts") {
+            iconName = "chart-bar"
           }
 
           return <MaterialCommunityIcons name={iconName} size={size} color={color} />
         },
         tabBarActiveTintColor: '#7E57C2',
-        animation: 'shift' //For smooth transition between screens
       })}
     >
 
@@ -45,15 +52,6 @@ function HomeTabs() {
       <Tab.Screen name='Charts' component={ChartScreen} />
     </Tab.Navigator>
 
-  );
-}
-
-function StackNavigator() {
-  return (
-    <Stack.Navigator >
-      <Stack.Screen name='HomeScreen' component={HomeScreen} />
-      <Stack.Screen name='AddActivity' component={AddActivity} options={{ title: "", headerTintColor: '#7E57C2' }} />
-    </Stack.Navigator>
   );
 }
 

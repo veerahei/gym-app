@@ -3,7 +3,7 @@ import { View, StyleSheet, ScrollView } from "react-native"
 import { Text, SegmentedButtons, Button } from "react-native-paper"
 import { BarChart, PieChart } from 'react-native-chart-kit';
 import { Dimensions } from 'react-native';
-import { getDatabase, ref, onValue } from "firebase/database";
+import { getDatabase, ref, onValue, off } from "firebase/database";
 import { app } from './firebaseConfig';
 import { getAuth } from "firebase/auth";
 
@@ -24,75 +24,92 @@ export default function ChartScreen() {
     const currentUser = auth.currentUser;
 
 
+    //Luo kuuntelijan ja asettaa datan. Tämä määritellään erikseen, jotta se voidaan poistaa kun kuuntelijaa ei enää tarvita.
+    const onActivityChange = (snapshot) => {
 
-    //Hae data tietokannasta
-    useEffect(() => {
+        const data = snapshot.val();   //data on olio, ei lista! olio jossa avain-arvo pareja. Avain on aktiviteetin id, jota ei nyt tarvita, niin käytetään object.values joka ottaa vain arvot, ja asetetaan ne listaan alla.
+        //NOTE! tässä ei toiminut suoraan state muuttuja aktiviteettien tallennukseen. Se on asynkroininen, joten sivu jumitti koko ajan, eikä näyttänyt dataa. Haen tiedot firebasesta ja tallennan ne ensin perusmuuttujaan activityList.
 
-        if (currentUser) {
-            const activitiesRef = ref(db, `users/${currentUser.uid}/activities`)
-            onValue(activitiesRef, (snapshot) => {
-                const data = snapshot.val();   //data on olio, ei lista! olio jossa avain-arvo pareja. Avain on aktiviteetin id, jota ei nyt tarvita, niin käytetään object.values joka ottaa vain arvot, ja asetetaan ne listaan alla.
-                //NOTE! tässä ei toiminut suoraan state muuttuja aktiviteettien tallennukseen. Se on asynkroininen, joten sivu jumitti koko ajan, eikä näyttänyt dataa. Haen tiedot firebasesta ja tallennan ne ensin perusmuuttujaan activityList.
-                let activityList = []
-                if (data) {
-                    activityList = (Object.values(data)) //
-                } else {
-                    setActivitiesData([]);
-                }
+        let activityList;
+        if (data) {
+            activityList = Object.values(data);
 
-                //Tietokannasta hatut aktiviteetit listana
-                console.log("Aktiviteetit: ", activityList);
+            console.log("Chart-sivun aktiviteetit", activityList);
+            //Laske esiintymät. Lähde: https://www.geeksforgeeks.org/javascript/count-occurrences-of-all-items-in-an-array-in-javascript/
+            let counts = activityList.reduce((acc, curr) => {
+                acc[curr.activityName] = (acc[curr.activityName] || 0) + 1;
+                return acc;
+            }, {})
 
-                //Laske esiintymät. Lähde: https://www.geeksforgeeks.org/javascript/count-occurrences-of-all-items-in-an-array-in-javascript/
-                let counts = activityList.reduce((acc, curr) => {
-                    acc[curr.activityName] = (acc[curr.activityName] || 0) + 1;
-                    return acc;
-                }, {})
+            console.log("Esiintymiskerrat", counts)
 
-                console.log("Esiintymiskerrat", counts)
+            //Color palette: https://mycolor.space/
+            const colors = ["#7E57C2", "#9c72e1", "#140060", "#fbeaff", "#bb8eff", "#daacff", "#facaff", "#ffe8ff", "#4d2c91"]
 
-                //Color palette: https://mycolor.space/
-                const colors = ["#7E57C2", "#9c72e1", "#140060", "#fbeaff", "#bb8eff", "#daacff", "#facaff", "#ffe8ff", "#4d2c91"]
+            console.log(Object.entries(counts))
 
-                console.log(Object.entries(counts))
+            //Data  piechartin tarvitsemaan muotoon.
+            // TÄMÄ OBJECT.ENTRIES JA MAP RAKENNE on tismalleen sama, kuin firebase luentoesimerkissä, jossa tehdään poistotoiminto. 
+            const formattedData = Object.entries(counts).map(([key, value], index) => ({
+                name: key,
+                occurrence: value,
+                color: colors[index],
+                legendFontColor: "#333",
+                legendFontSize: 15,
+            }));
 
-                //Data  piechartin tarvitsemaan muotoon.
-                // TÄMÄ OBJECT.ENTRIES JA MAP RAKENNE on tismalleen sama, kuin firebase luentoesimerkissä, jossa tehdään poistotoiminto. 
-                const formattedData = Object.entries(counts).map(([key, value], index) => ({
-                    name: key,
-                    occurrence: value,
-                    color: colors[index],
-                    legendFontColor: "#333",
-                    legendFontSize: 15,
-                }));
+            setPieChartData(formattedData)
+            console.log("Pie chart data:", formattedData);
 
-                setPieChartData(formattedData)
-                console.log("Pie chart data:", formattedData);
+            //Paljonko aikaa käytetty Lähde: https://www.geeksforgeeks.org/javascript/count-occurrences-of-all-items-in-an-array-in-javascript/
+            let totalTime = activityList.reduce((acc, curr) => {
+                acc[curr.activityName] = (acc[curr.activityName] || 0) + Number(curr.duration);
+                return acc;
+            }, {})
 
-                //Paljonko aikaa käytetty Lähde: https://www.geeksforgeeks.org/javascript/count-occurrences-of-all-items-in-an-array-in-javascript/
-                let totalTime = activityList.reduce((acc, curr) => {
-                    acc[curr.activityName] = (acc[curr.activityName] || 0) + Number(curr.duration);
-                    return acc;
-                }, {})
+            console.log(totalTime)
 
-                console.log(totalTime)
+            const chartData = {
+                labels: Object.keys(totalTime),
+                datasets: [
+                    {
+                        data: Object.values(totalTime),
+                    },
+                ],
+            };
 
-                const chartData = {
-                    labels: Object.keys(totalTime),
-                    datasets: [
-                        {
-                            data: Object.values(totalTime),
-                        },
-                    ],
-                };
+            setLineChartData(chartData)
 
-                setLineChartData(chartData)
+            console.log(chartData.labels)
 
-                console.log(chartData.labels)
 
-            })
+        } else {
+            setActivitiesData([]);
         }
-    }, []);
+
+
+    }
+
+
+    //Hae data tietokannasta. Tämä suoritetaan aina ja ensimmäisenä, kun käyttäjä avaa Chart-tabin.
+    useEffect(() => {
+        if (!currentUser) {
+            return
+        }
+
+        //Tarkista että käyttäjä on kirjautunut
+        if (currentUser) {
+
+            const activitiesRef = ref(db, `users/${currentUser.uid}/activities`)
+            // lisää kuuntelija
+            onValue(activitiesRef, onActivityChange);
+
+            // Poista kuuntelija kun käyttäjä poistuu tabista
+            return () => off(activitiesRef, 'value', onActivityChange);
+
+        }
+
+    }, [currentUser]);
 
 
     const labelWidth = 80; // Width of each label

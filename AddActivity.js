@@ -24,11 +24,11 @@ export default function AddActivity() {
 
     const db = getDatabase(app);
     const navigation = useNavigation();
-    const auth = getAuth(app)
+    const auth = getAuth(app);
 
-    const user = auth.currentUser;
+    console.log("Uuden aktiviteetin lisäyssivu renderöityy");
+    console.log(activity)
 
-    console.log(activity);
     const toggleDatePicker = () => {
         setShowPicker(!showPicker);
 
@@ -50,7 +50,7 @@ export default function AddActivity() {
 
     //Save (write) workout plan to database and go back to home screen
     function addActivity() {
-        console.log("in the function");
+        console.log("Uuden aktiviteetin tallennusfunktiossa");
 
         const currentUser = auth.currentUser;
         if (currentUser) {

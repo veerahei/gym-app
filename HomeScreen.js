@@ -16,14 +16,29 @@ export default function HomeScreen() {
     const navigation = useNavigation();
     const currentUser = auth.currentUser; // Get current user
 
+    console.log("Etusivu renderöity")
+    console.log("Kirjautunut käyttäjä: ", currentUser.uid)
+
+
+    //MIlloin useeffect suoritetaan: Kun sivu avataan ensimmäisen kerran. Kun data refissä muuttuu (tulee lisää tai poistetaan). Kun currentuser arvo muuttuu.
+    //Currentuser haussa voi kestää hetki. Jos user on null, palataan, lopetetaan useEffect ja jatketaan currentuserin hakua. Use effect suoritetaan kun currentuser tila muuttuu, eli saadaan käyttäjän tiedot
     useEffect(() => {
 
+        console.log("Mentiin useEffectiin")
+        if (!currentUser) {
+            console.log("Current user ei löytynyt")
+            return
+        }
+
         if (currentUser) {  //If user is signed in, show user's own activities
+            console.log("Current user löytyi")
             const activitiesRef = ref(db, `users/${currentUser.uid}/activities/`);
             onValue(activitiesRef, (snapshot) => {
+                console.log("On value listener asetettu aktiviteetteihin/datan arvo muuttunut?")
                 const data = snapshot.val();
                 if (data) {
                     setActivities(Object.entries(data).map(([key, value]) => ({ ...value, id: key }))); //Tässä kohti haetaan tietokannasta käyttäjän lisäämät aktiviteetit. Niitä luotaessa on luotu aktiviteetti id. Aktiviteetin id pitää saada mukaan tässä, jotta niitä voidaan käsitellä (esim. poistaa) tässä screenissä.
+
                 } else {
                     setActivities([]);
                 }
@@ -31,6 +46,7 @@ export default function HomeScreen() {
         }
     }, []);
 
+    console.log("Etusivun aktiviteetit:", activities);
 
     const handleSignOut = () => {
         signOut(auth)
@@ -90,7 +106,7 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#fff',
         alignItems: 'center',
-  
+
     },
     actions: {
         marginBottom: 40,

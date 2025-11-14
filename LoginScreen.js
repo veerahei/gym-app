@@ -18,7 +18,7 @@ export default function LoginScreen() {
     const navigation = useNavigation();
 
     useEffect(() => {
-        onAuthStateChanged(auth, (user) => {
+        const unsubscribe = onAuthStateChanged(auth, (user) => {
             if (user) {
                 navigation.replace("MainTabs")
             } else {
@@ -26,6 +26,7 @@ export default function LoginScreen() {
                 // ...
             }
         })
+        return unsubscribe
     }, [])
 
     const handleRegistration = () => {
