@@ -1,27 +1,47 @@
 import { useEffect, useState } from "react";
 import { View, StyleSheet, ScrollView } from "react-native"
-import { Text, SegmentedButtons, Button } from "react-native-paper"
+import { Text, } from "react-native-paper"
 import { BarChart, PieChart } from 'react-native-chart-kit';
 import { Dimensions } from 'react-native';
-import { getDatabase, ref, onValue, off } from "firebase/database";
+import { getDatabase, ref, onValue, off, } from "firebase/database";
 import { app } from './firebaseConfig';
 import { getAuth } from "firebase/auth";
 
+import { getBarchartData, getPiechartData } from "./ChartData";
 
 
 export default function ChartScreen() {
 
-    const [activitiesData, setActivitiesData] = useState([]);
     const [pieChartData, setPieChartData] = useState([]);
-    const [lineChartData, setLineChartData] = useState({
+    const [barChartData, setBarChartData] = useState({
         labels: [],
         datasets: [{ data: [] }]
     });
 
-
     const auth = getAuth(app)
     const db = getDatabase(app);
     const currentUser = auth.currentUser;
+
+
+    //Hae data tietokannasta. Tämä suoritetaan aina ja ensimmäisenä, kun käyttäjä avaa Chart-tabin.
+    useEffect(() => {
+        console.log("Chart Screenin useEffectissä")
+        if (!currentUser) {
+            console.log("Käyttäjää ei löytynyt")
+            return
+        }
+
+        //Tarkista että käyttäjä on kirjautunut
+        if (currentUser) {
+            console.log("Käyttäjä löytyi")
+            const activitiesRef = ref(db, `users/${currentUser.uid}/activities`)
+            // lisää kuuntelija
+            onValue(activitiesRef, onActivityChange);
+
+            // Poista kuuntelija kun käyttäjä poistuu tabista
+            return () => off(activitiesRef, 'value', onActivityChange);
+        }
+    }, [currentUser]);
 
 
     //Luo kuuntelijan ja asettaa datan. Tämä määritellään erikseen, jotta se voidaan poistaa kun kuuntelijaa ei enää tarvita.
@@ -32,88 +52,24 @@ export default function ChartScreen() {
 
         let activityList;
         if (data) {
+            console.log("Data firebasesta löytyi")
+
             activityList = Object.values(data);
 
+            const barchartData = getBarchartData(activityList);
+            setBarChartData(barchartData);
+
+            const piechartData = getPiechartData(activityList);
+            setPieChartData(piechartData);
+
             console.log("Chart-sivun aktiviteetit", activityList);
-            //Laske esiintymät. Lähde: https://www.geeksforgeeks.org/javascript/count-occurrences-of-all-items-in-an-array-in-javascript/
-            let counts = activityList.reduce((acc, curr) => {
-                acc[curr.activityName] = (acc[curr.activityName] || 0) + 1;
-                return acc;
-            }, {})
-
-            console.log("Esiintymiskerrat", counts)
-
-            //Color palette: https://mycolor.space/
-            const colors = ["#7E57C2", "#9c72e1", "#140060", "#fbeaff", "#bb8eff", "#daacff", "#facaff", "#ffe8ff", "#4d2c91"]
-
-            console.log(Object.entries(counts))
-
-            //Data  piechartin tarvitsemaan muotoon.
-            // TÄMÄ OBJECT.ENTRIES JA MAP RAKENNE on tismalleen sama, kuin firebase luentoesimerkissä, jossa tehdään poistotoiminto. 
-            const formattedData = Object.entries(counts).map(([key, value], index) => ({
-                name: key,
-                occurrence: value,
-                color: colors[index],
-                legendFontColor: "#333",
-                legendFontSize: 15,
-            }));
-
-            setPieChartData(formattedData)
-            console.log("Pie chart data:", formattedData);
-
-            //Paljonko aikaa käytetty Lähde: https://www.geeksforgeeks.org/javascript/count-occurrences-of-all-items-in-an-array-in-javascript/
-            let totalTime = activityList.reduce((acc, curr) => {
-                acc[curr.activityName] = (acc[curr.activityName] || 0) + Number(curr.duration);
-                return acc;
-            }, {})
-
-            console.log(totalTime)
-
-            const chartData = {
-                labels: Object.keys(totalTime),
-                datasets: [
-                    {
-                        data: Object.values(totalTime),
-                    },
-                ],
-            };
-
-            setLineChartData(chartData)
-
-            console.log(chartData.labels)
-
-
         } else {
-            setActivitiesData([]);
+            console.log("Else haara")
         }
-
-
     }
 
-
-    //Hae data tietokannasta. Tämä suoritetaan aina ja ensimmäisenä, kun käyttäjä avaa Chart-tabin.
-    useEffect(() => {
-        if (!currentUser) {
-            return
-        }
-
-        //Tarkista että käyttäjä on kirjautunut
-        if (currentUser) {
-
-            const activitiesRef = ref(db, `users/${currentUser.uid}/activities`)
-            // lisää kuuntelija
-            onValue(activitiesRef, onActivityChange);
-
-            // Poista kuuntelija kun käyttäjä poistuu tabista
-            return () => off(activitiesRef, 'value', onActivityChange);
-
-        }
-
-    }, [currentUser]);
-
-
     const labelWidth = 80; // Width of each label
-    const chartWidth = lineChartData.labels.length * labelWidth;
+    const chartWidth = barChartData.labels.length * labelWidth;
 
     return (
         <View style={styles.container}>
@@ -132,7 +88,7 @@ export default function ChartScreen() {
             />
             <ScrollView horizontal={true}>
                 <BarChart
-                    data={lineChartData}
+                    data={barChartData}
                     width={chartWidth}
                     height={220}
                     chartConfig={{

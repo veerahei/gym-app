@@ -1,6 +1,6 @@
 import { View, StyleSheet } from "react-native"
 import { useState, useEffect } from "react";
-import { Text, TextInput, Button } from "react-native-paper";
+import { TextInput, Button } from "react-native-paper";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
 import { app } from './firebaseConfig';
 import { useNavigation } from "@react-navigation/native";
@@ -14,14 +14,19 @@ export default function LoginScreen() {
     const [secureTextEntry, setSecureTextEntry] = useState(true);
 
     const auth = getAuth(app);
-
     const navigation = useNavigation();
 
+    //Tämä kuuntelee kirjautumistilaa kun ollaan Loginscreenissä. Kun käyttäjä kirjautuu sisään, tämä navigoi oikeaan paikkaan. Kun screenistä lähdetään, tätä ei enää kuunneella.
     useEffect(() => {
+        console.log("LoginScreenin useEffectissä")
+
         const unsubscribe = onAuthStateChanged(auth, (user) => {
+            console.log("Kirjautumistilan kuuntelija lisätty/muutos kirjautumistilassa")
             if (user) {
+                console.log("User on kirjautunut sisään, siirrytään maintabsiin")
                 navigation.replace("MainTabs")
             } else {
+                console.log("User ei ole kirjautunut sisään")
                 // User is signed out
                 // ...
             }
@@ -30,7 +35,7 @@ export default function LoginScreen() {
     }, [])
 
     const handleRegistration = () => {
-        console.log("In regis")
+        console.log("In registration")
         createUserWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
                 const user = userCredential.user
@@ -43,7 +48,7 @@ export default function LoginScreen() {
     }
 
     const handleLogin = () => {
-
+        console.log("HandleLogin funktiossa")
         signInWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
                 // Signed in 
