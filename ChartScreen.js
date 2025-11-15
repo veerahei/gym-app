@@ -35,38 +35,53 @@ export default function ChartScreen() {
         if (currentUser) {
             console.log("Käyttäjä löytyi")
             const activitiesRef = ref(db, `users/${currentUser.uid}/activities`)
-            // lisää kuuntelija
-            onValue(activitiesRef, onActivityChange);
 
-            // Poista kuuntelija kun käyttäjä poistuu tabista
-            return () => off(activitiesRef, 'value', onActivityChange);
+            onValue(activitiesRef, (snapshot) => {
+                console.log("Chartscreenin onValue kuuntelijassa")
+                const data = snapshot.val(); let activityList;
+                if (data) {
+                    console.log("Data firebasesta löytyi")
+
+                    activityList = Object.values(data);
+
+                    const barchartData = getBarchartData(activityList);
+                    setBarChartData(barchartData);
+
+                    const piechartData = getPiechartData(activityList);
+                    setPieChartData(piechartData);
+
+                    console.log("Chart-sivun aktiviteetit", activityList);
+                } else {
+                    console.log("Else haara")
+                }
+            });
         }
     }, [currentUser]);
 
 
     //Luo kuuntelijan ja asettaa datan. Tämä määritellään erikseen, jotta se voidaan poistaa kun kuuntelijaa ei enää tarvita.
-    const onActivityChange = (snapshot) => {
-
-        const data = snapshot.val();   //data on olio, ei lista! olio jossa avain-arvo pareja. Avain on aktiviteetin id, jota ei nyt tarvita, niin käytetään object.values joka ottaa vain arvot, ja asetetaan ne listaan alla.
-        //NOTE! tässä ei toiminut suoraan state muuttuja aktiviteettien tallennukseen. Se on asynkroininen, joten sivu jumitti koko ajan, eikä näyttänyt dataa. Haen tiedot firebasesta ja tallennan ne ensin perusmuuttujaan activityList.
-
-        let activityList;
-        if (data) {
-            console.log("Data firebasesta löytyi")
-
-            activityList = Object.values(data);
-
-            const barchartData = getBarchartData(activityList);
-            setBarChartData(barchartData);
-
-            const piechartData = getPiechartData(activityList);
-            setPieChartData(piechartData);
-
-            console.log("Chart-sivun aktiviteetit", activityList);
-        } else {
-            console.log("Else haara")
-        }
-    }
+    /* const onActivityChange = (snapshot) => {
+ 
+         const data = snapshot.val();   //data on olio, ei lista! olio jossa avain-arvo pareja. Avain on aktiviteetin id, jota ei nyt tarvita, niin käytetään object.values joka ottaa vain arvot, ja asetetaan ne listaan alla.
+         //NOTE! tässä ei toiminut suoraan state muuttuja aktiviteettien tallennukseen. Se on asynkroininen, joten sivu jumitti koko ajan, eikä näyttänyt dataa. Haen tiedot firebasesta ja tallennan ne ensin perusmuuttujaan activityList.
+ 
+         let activityList;
+         if (data) {
+             console.log("Data firebasesta löytyi")
+ 
+             activityList = Object.values(data);
+ 
+             const barchartData = getBarchartData(activityList);
+             setBarChartData(barchartData);
+ 
+             const piechartData = getPiechartData(activityList);
+             setPieChartData(piechartData);
+ 
+             console.log("Chart-sivun aktiviteetit", activityList);
+         } else {
+             console.log("Else haara")
+         }
+     }*/
 
     const labelWidth = 80; // Width of each label
     const chartWidth = barChartData.labels.length * labelWidth;

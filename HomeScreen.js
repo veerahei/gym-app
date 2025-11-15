@@ -24,7 +24,7 @@ export default function HomeScreen() {
     //Currentuser haussa voi kestää hetki. Jos user on null, palataan, lopetetaan useEffect ja jatketaan currentuserin hakua. Use effect suoritetaan kun currentuser tila muuttuu, eli saadaan käyttäjän tiedot
     useEffect(() => {
 
-        console.log("Mentiin useEffectiin")
+        console.log("Mentiin homeScreenin useEffectiin")
         if (!currentUser) {
             console.log("Current user ei löytynyt")
             return
