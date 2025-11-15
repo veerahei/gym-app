@@ -1,15 +1,22 @@
 import { View, FlatList, StyleSheet } from "react-native"
-import { Button, Text, Card, IconButton, MD3Colors } from "react-native-paper";
+import { Button, Text, Card, IconButton, Portal, Dialog, Snackbar } from "react-native-paper";
 import { useEffect, useState } from "react";
 import { getDatabase, onValue, ref, remove, off } from "firebase/database";
 import { app } from './firebaseConfig';
 
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { getAuth, signOut } from "firebase/auth";
 
 
-export default function HomeScreen() {
+export default function HomeScreen({ route }) {
     const [activities, setActivities] = useState([]); //User's saved activities
+    const [dialogVisible, setDialogVisible] = useState(false);
+    const [idToDelete, setIdToDelete] = useState("");
+
+    const [snackbarVisible, setSnackbarVisible] = useState(false);
+
+    const hideDialog = () => setDialogVisible(false);
+
     const db = getDatabase(app);
     const auth = getAuth(app)
 
@@ -19,6 +26,13 @@ export default function HomeScreen() {
     console.log("Etusivu renderöity")
     console.log("Kirjautunut käyttäjä: ", currentUser.uid)
 
+    //Näytä snackbar uuden aktiviteetin lisäyksen jälkeen
+    useEffect(() => {
+        if (route.params?.added) {
+            setSnackbarVisible(true);
+            navigation.setParams({ added: false })
+        }
+    }, [route.params?.added])
 
     //MIlloin useeffect suoritetaan: Kun sivu avataan ensimmäisen kerran. Kun data refissä muuttuu (tulee lisää tai poistetaan). Kun currentuser arvo muuttuu.
     //Currentuser haussa voi kestää hetki. Jos user on null, palataan, lopetetaan useEffect ja jatketaan currentuserin hakua. Use effect suoritetaan kun currentuser tila muuttuu, eli saadaan käyttäjän tiedot
@@ -46,6 +60,15 @@ export default function HomeScreen() {
         }
     }, []);
 
+    useEffect(() => {
+        // Use `setOptions` to update the button that we previously specified
+        navigation.setOptions({
+            headerRight: () => (
+                <Button onPress={() => handleSignOut()}>Log out</Button>
+            ),
+        });
+    }, [navigation]);
+
     console.log("Etusivun aktiviteetit:", activities);
 
     const handleSignOut = () => {
@@ -58,19 +81,16 @@ export default function HomeScreen() {
 
     const handleDelete = (id) => {
         console.log("in delete")
+
         remove(ref(db, `users/${currentUser.uid}/activities/${id}`))
+        setDialogVisible(false)
     }
 
     //Show user's activities in a list
     return (
         <View style={styles.container}>
-
-            <Button
-                onPress={handleSignOut}
-            >Sign out
-            </Button>
-
             <View style={styles.actions}>
+                <Text variant="headlineMedium">Welcome to Activity Tracker</Text>
                 <Button
                     onPress={() => navigation.navigate('AddActivity')}
                     mode="contained"
@@ -80,8 +100,7 @@ export default function HomeScreen() {
                 </Button>
             </View>
 
-
-            <Text>Your latest activities</Text>
+            <Text variant="headlineSmall">Your activities:</Text>
 
             <FlatList
                 style={styles.list}
@@ -91,14 +110,31 @@ export default function HomeScreen() {
 
                         <Card.Title title={item.activityName} subtitle={`${item.activityDate} Duration: ${item.duration}`} />
                         <Card.Actions>
-                            <IconButton icon="trash-can-outline" mode="contained" onPress={() => handleDelete(item.id)}></IconButton>
+                            <IconButton icon="trash-can-outline" mode="contained" onPress={() => { setDialogVisible(true); setIdToDelete(item.id); }}></IconButton>
                         </Card.Actions>
 
                     </Card>
                 }
-            ></FlatList>
+            ></FlatList >
 
-        </View>
+            <Portal>
+                <Dialog visible={dialogVisible} onDismiss={hideDialog}>
+                    <Dialog.Content><Text>Are you sure you want to delete this activity?</Text></Dialog.Content>
+                    <Dialog.Actions>
+                        <Button onPress={() => setDialogVisible(false)}>Cancel</Button>
+                        <Button onPress={() => handleDelete(idToDelete)}>Ok</Button>
+                    </Dialog.Actions>
+                </Dialog>
+            </Portal>
+
+            <Snackbar
+                visible={snackbarVisible}
+                onDismiss={() => setSnackbarVisible(false)}
+                duration={3000}
+            >
+                New activity added!
+            </Snackbar>
+        </View >
     )
 }
 
@@ -111,7 +147,9 @@ const styles = StyleSheet.create({
 
     },
     actions: {
+        marginTop: 30,
         marginBottom: 40,
+        gap: 20
     },
     list: {
         width: '100%',

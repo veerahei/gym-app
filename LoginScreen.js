@@ -1,4 +1,4 @@
-import { View, StyleSheet, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, Platform } from "react-native"
+import { View, StyleSheet, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, Platform, Image } from "react-native"
 import { useState, useEffect } from "react";
 import { TextInput, Button } from "react-native-paper";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
@@ -63,33 +63,36 @@ export default function LoginScreen() {
     }
 
     return (
-            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                <View style={styles.container}>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <View style={styles.container}>
+                <Image
+                    source={require("./assets/FullLogo_Transparent.png")}
+                    style={{width: 250, height: 200}}
+                />
+                <View style={styles.fields}>
 
-                    <View style={styles.fields}>
+                    <TextInput
+                        label="Email address"
+                        value={email}
+                        onChangeText={input => setEmail(input)}
+                    />
+                    <TextInput
+                        secureTextEntry={secureTextEntry}
+                        right={<TextInput.Icon icon="eye" onPress={() => setSecureTextEntry(!secureTextEntry)} />}
+                        label="Password"
+                        value={password}
+                        onChangeText={input => setPassword(input)}
+                    />
+                    <Button
+                        onPress={handleLogin}
+                    >Login</Button>
+                    <Button
+                        onPress={handleRegistration}
+                    >Register</Button>
 
-                        <TextInput
-                            label="Email address"
-                            value={email}
-                            onChangeText={input => setEmail(input)}
-                        />
-                        <TextInput
-                            secureTextEntry={secureTextEntry}
-                            right={<TextInput.Icon icon="eye" onPress={() => setSecureTextEntry(!secureTextEntry)} />}
-                            label="Password"
-                            value={password}
-                            onChangeText={input => setPassword(input)}
-                        />
-                        <Button
-                            onPress={handleLogin}
-                        >Login</Button>
-                        <Button
-                            onPress={handleRegistration}
-                        >Register</Button>
-
-                    </View>
-                </View >
-            </TouchableWithoutFeedback>
+                </View>
+            </View >
+        </TouchableWithoutFeedback>
     );
 }
 

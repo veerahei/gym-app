@@ -1,4 +1,4 @@
-import { TextInput, Button, Text } from "react-native-paper"
+import { TextInput, Button, Text, Snackbar } from "react-native-paper"
 import { Alert, View, StyleSheet, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, Platform } from "react-native"
 import { getDatabase, push, ref, } from "firebase/database";
 import { app } from './firebaseConfig';
@@ -18,6 +18,7 @@ export default function AddActivity() {
         duration: "",
         description: ""
     });
+
 
     const [date, setDate] = useState(new Date());
     const [showPicker, setShowPicker] = useState(false);
@@ -55,10 +56,10 @@ export default function AddActivity() {
         const currentUser = auth.currentUser;
         if (currentUser) {
             push(ref(db, `users/${currentUser.uid}/activities`), activity);
+
         }
 
-        Alert.alert("New activity added")
-        navigation.popToTop();
+        navigation.popTo('HomeScreen', { added: true });
     }
 
 
@@ -68,9 +69,9 @@ export default function AddActivity() {
             behavior={Platform.OS === "ios" ? "padding" : "height"}>
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                 <View style={styles.container}>
-
-                    <Text>Add your next activity</Text>
-
+                    <View style={{ marginBottom: 50 }}>
+                        <Text variant="headlineMedium">Add your next activity</Text>
+                    </View>
                     <View style={styles.form}>
                         <TextInput
                             label="Activity"
@@ -121,6 +122,8 @@ export default function AddActivity() {
                     >
                         Save activity
                     </Button>
+
+
                 </View>
             </TouchableWithoutFeedback>
         </KeyboardAvoidingView>

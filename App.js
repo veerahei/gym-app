@@ -2,6 +2,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { PaperProvider } from 'react-native-paper';
+import { Image } from 'react-native';
 
 import HomeScreen from './HomeScreen';
 import SearchScreen from './SearchScreen';
@@ -15,12 +16,20 @@ import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
+function LogoTitle() {
+  return (
+    <Image
+      source={require('./assets/FullLogo_Transparent_NoBuffer.png')}
+      style={{ width: 40, height: 40 }}
+    />
+  )
+}
 
 function StackNavigator() {
   return (
     <Stack.Navigator >
-      <Stack.Screen name='HomeScreen' component={HomeScreen} />
-      <Stack.Screen name='AddActivity' component={AddActivity} options={{ title: "", headerTintColor: '#7E57C2' }} />
+      <Stack.Screen name='HomeScreen' component={HomeScreen} options={{ headerTitle: (props) => <LogoTitle {...props} />, headerShadowVisible: false }} />
+      <Stack.Screen name='AddActivity' component={AddActivity} options={{ headerTitle: (props) => <LogoTitle {...props} />, headerTintColor: '#7E57C2' }} />
     </Stack.Navigator>
   );
 }
@@ -30,13 +39,13 @@ function HomeTabs() {
     <Tab.Navigator
 
       screenOptions={({ route }) => ({
-        tabBarIcon: ({ focused, color, size }) => {
+        tabBarIcon: ({ color, size }) => {
           let iconName;
 
           if (route.name === 'MainHome') {
             iconName = 'home'
           } else if (route.name === 'Search') {
-            iconName = 'search-web' 
+            iconName = 'search-web'
           } else if (route.name === "Charts") {
             iconName = "chart-bar"
           }
@@ -48,8 +57,8 @@ function HomeTabs() {
     >
 
       <Tab.Screen name='MainHome' component={StackNavigator} options={{ headerShown: false }} />
-      <Tab.Screen name='Search' component={SearchScreen} options={{ headerShown: false }} />
-      <Tab.Screen name='Charts' component={ChartScreen} />
+      <Tab.Screen name='Search' component={SearchScreen} options={{ headerTitle: (props) => <LogoTitle {...props} />, }} />
+      <Tab.Screen name='Charts' component={ChartScreen} options={{ headerTitle: (props) => <LogoTitle {...props} />, }} />
     </Tab.Navigator>
 
   );
