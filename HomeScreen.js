@@ -1,7 +1,7 @@
 import { View, FlatList, StyleSheet } from "react-native"
 import { Button, Text, Card, IconButton, MD3Colors } from "react-native-paper";
 import { useEffect, useState } from "react";
-import { getDatabase, onValue, ref, remove } from "firebase/database";
+import { getDatabase, onValue, ref, remove, off } from "firebase/database";
 import { app } from './firebaseConfig';
 
 import { useNavigation } from "@react-navigation/native";
@@ -24,7 +24,7 @@ export default function HomeScreen() {
     //Currentuser haussa voi kestää hetki. Jos user on null, palataan, lopetetaan useEffect ja jatketaan currentuserin hakua. Use effect suoritetaan kun currentuser tila muuttuu, eli saadaan käyttäjän tiedot
     useEffect(() => {
 
-        console.log("Mentiin homeScreenin useEffectiin")
+        console.log("HOMESCREENIN USEEFFECTISSÄ")
         if (!currentUser) {
             console.log("Current user ei löytynyt")
             return
@@ -49,6 +49,8 @@ export default function HomeScreen() {
     console.log("Etusivun aktiviteetit:", activities);
 
     const handleSignOut = () => {
+        //Poista kuuntelijat, kun käyttäjä kirjautuu ulos. Muuten tulee päällekkäisiä kuuntelijoita, jos käyttäjä kirjautuu ulos ja takaisin sovellukseen.
+        off(ref(db, `users/${currentUser.uid}/activities/`))
         signOut(auth)
             .then(() => (navigation.replace("Login")))
             .catch(error => console.log(error.message))

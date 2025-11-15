@@ -1,9 +1,11 @@
-import { View, StyleSheet } from "react-native"
+import { View, StyleSheet, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, Platform } from "react-native"
 import { useState, useEffect } from "react";
 import { TextInput, Button } from "react-native-paper";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
 import { app } from './firebaseConfig';
 import { useNavigation } from "@react-navigation/native";
+
+
 
 
 
@@ -61,29 +63,33 @@ export default function LoginScreen() {
     }
 
     return (
-        <View style={styles.container}>
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                <View style={styles.container}>
 
-            <View style={styles.fields}>
-                <TextInput
-                    label="Email address"
-                    value={email}
-                    onChangeText={input => setEmail(input)}
-                />
-                <TextInput
-                    secureTextEntry={secureTextEntry}
-                    right={<TextInput.Icon icon="eye" onPress={() => setSecureTextEntry(!secureTextEntry)} />}
-                    label="Password"
-                    value={password}
-                    onChangeText={input => setPassword(input)}
-                />
-                <Button
-                    onPress={handleLogin}
-                >Login</Button>
-                <Button
-                    onPress={handleRegistration}
-                >Register</Button>
-            </View>
-        </View>
+                    <View style={styles.fields}>
+
+                        <TextInput
+                            label="Email address"
+                            value={email}
+                            onChangeText={input => setEmail(input)}
+                        />
+                        <TextInput
+                            secureTextEntry={secureTextEntry}
+                            right={<TextInput.Icon icon="eye" onPress={() => setSecureTextEntry(!secureTextEntry)} />}
+                            label="Password"
+                            value={password}
+                            onChangeText={input => setPassword(input)}
+                        />
+                        <Button
+                            onPress={handleLogin}
+                        >Login</Button>
+                        <Button
+                            onPress={handleRegistration}
+                        >Register</Button>
+
+                    </View>
+                </View >
+            </TouchableWithoutFeedback>
     );
 }
 

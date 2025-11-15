@@ -25,7 +25,7 @@ export default function ChartScreen() {
 
     //Hae data tietokannasta. Tämä suoritetaan aina ja ensimmäisenä, kun käyttäjä avaa Chart-tabin.
     useEffect(() => {
-        console.log("Chart Screenin useEffectissä")
+        console.log("CHART SCREENIN USEEFFECTISSÄ")
         if (!currentUser) {
             console.log("Käyttäjää ei löytynyt")
             return
@@ -56,32 +56,8 @@ export default function ChartScreen() {
                 }
             });
         }
-    }, [currentUser]);
+    }, []);
 
-
-    //Luo kuuntelijan ja asettaa datan. Tämä määritellään erikseen, jotta se voidaan poistaa kun kuuntelijaa ei enää tarvita.
-    /* const onActivityChange = (snapshot) => {
- 
-         const data = snapshot.val();   //data on olio, ei lista! olio jossa avain-arvo pareja. Avain on aktiviteetin id, jota ei nyt tarvita, niin käytetään object.values joka ottaa vain arvot, ja asetetaan ne listaan alla.
-         //NOTE! tässä ei toiminut suoraan state muuttuja aktiviteettien tallennukseen. Se on asynkroininen, joten sivu jumitti koko ajan, eikä näyttänyt dataa. Haen tiedot firebasesta ja tallennan ne ensin perusmuuttujaan activityList.
- 
-         let activityList;
-         if (data) {
-             console.log("Data firebasesta löytyi")
- 
-             activityList = Object.values(data);
- 
-             const barchartData = getBarchartData(activityList);
-             setBarChartData(barchartData);
- 
-             const piechartData = getPiechartData(activityList);
-             setPieChartData(piechartData);
- 
-             console.log("Chart-sivun aktiviteetit", activityList);
-         } else {
-             console.log("Else haara")
-         }
-     }*/
 
     const labelWidth = 80; // Width of each label
     const chartWidth = barChartData.labels.length * labelWidth;
