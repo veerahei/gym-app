@@ -29,7 +29,7 @@ function StackNavigator() {
   return (
     <Stack.Navigator >
       <Stack.Screen name='HomeScreen' component={HomeScreen} options={{ headerTitle: (props) => <LogoTitle {...props} />, headerShadowVisible: false }} />
-      <Stack.Screen name='AddActivity' component={AddActivity} options={{ headerTitle: (props) => <LogoTitle {...props} />, headerTintColor: '#7E57C2' }} />
+      <Stack.Screen name='AddActivity' component={AddActivity} options={{ headerTitle: (props) => <LogoTitle {...props} />, headerTintColor: '#7E57C2', headerBackTitle: "Back" }} />
     </Stack.Navigator>
   );
 }
@@ -56,7 +56,7 @@ function HomeTabs() {
       })}
     >
 
-      <Tab.Screen name='MainHome' component={StackNavigator} options={{ headerShown: false }} />
+      <Tab.Screen name='MainHome' component={StackNavigator} options={{ headerShown: false, title: "Home" }} />
       <Tab.Screen name='Search' component={SearchScreen} options={{ headerTitle: (props) => <LogoTitle {...props} />, }} />
       <Tab.Screen name='Charts' component={ChartScreen} options={{ headerTitle: (props) => <LogoTitle {...props} />, }} />
     </Tab.Navigator>

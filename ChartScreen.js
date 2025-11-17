@@ -22,6 +22,10 @@ export default function ChartScreen() {
     const db = getDatabase(app);
     const currentUser = auth.currentUser;
 
+    //Alusta kaavion leveys näytön leveyden suuruiseksi 
+    const [chartWidth, setChartWidth] = useState(Dimensions.get("window").width)
+
+    console.log("KAAVION LEVEYS ONVALUEN ULKOPUOLELLA", chartWidth)
 
     //Hae data tietokannasta. Tämä suoritetaan aina ja ensimmäisenä, kun käyttäjä avaa Chart-tabin.
     useEffect(() => {
@@ -46,9 +50,21 @@ export default function ChartScreen() {
 
                     const barchartData = getBarchartData(activityList);
                     setBarChartData(barchartData);
-
+                    console.log("Saatu data: ", barchartData)
                     const piechartData = getPiechartData(activityList);
                     setPieChartData(piechartData);
+
+                    let newWidth;
+                    if (barchartData.labels.length * 80 > Dimensions.get("window").width) {
+                        newWidth = barchartData.labels.length * 80;
+                    } else {
+                        newWidth = Dimensions.get("window").width
+                    }
+
+                    console.log("Barchartin data: ", barchartData.labels.length * 80)
+                    console.log("Chartwidth: ", newWidth)
+                    setChartWidth(newWidth)
+
 
                     console.log("Chart-sivun aktiviteetit", activityList);
                 } else {
@@ -59,8 +75,7 @@ export default function ChartScreen() {
     }, []);
 
 
-    const labelWidth = 80; // Width of each label
-    const chartWidth = barChartData.labels.length * labelWidth;
+
 
     return (
         <View style={styles.container}>
@@ -77,8 +92,10 @@ export default function ChartScreen() {
                 paddingLeft={"15"}
                 absolute={false} // Näyttääkö prosentteina vai tod. lukuina
             />
+
             <ScrollView horizontal={true}>
                 <BarChart
+                    key={barChartData.labels.join("-")}
                     data={barChartData}
                     width={chartWidth}
                     height={220}
@@ -98,10 +115,10 @@ export default function ChartScreen() {
                             stroke: "#ffa726"
                         }
                     }}
-                    bezier
+
                     style={{
                         marginVertical: 8,
-                        borderRadius: 16
+                        //borderRadius: 16
                     }}
                 />
             </ScrollView>
@@ -114,6 +131,8 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#fff',
-        alignItems: 'center',
+        //alignItems: 'center',
+
+        paddingHorizontal: "2%"
     },
 })
