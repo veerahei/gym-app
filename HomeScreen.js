@@ -1,7 +1,7 @@
 import { View, FlatList, StyleSheet } from "react-native"
-import { Button, Text, Card, IconButton, Portal, Dialog, Snackbar } from "react-native-paper";
+import { Button, Text, Card, IconButton, Portal, Dialog, Snackbar, } from "react-native-paper";
 import { useEffect, useState } from "react";
-import { getDatabase, onValue, ref, remove, off } from "firebase/database";
+import { getDatabase, onValue, ref, remove, off, orderByChild } from "firebase/database";
 import { app } from './firebaseConfig';
 
 import { useNavigation, useRoute } from "@react-navigation/native";
@@ -25,6 +25,7 @@ export default function HomeScreen({ route }) {
 
     console.log("Etusivu renderöity")
     console.log("Kirjautunut käyttäjä: ", currentUser.uid)
+
 
     //Näytä snackbar uuden aktiviteetin lisäyksen jälkeen
     useEffect(() => {
@@ -51,6 +52,7 @@ export default function HomeScreen({ route }) {
                 console.log("On value listener asetettu aktiviteetteihin/datan arvo muuttunut?")
                 const data = snapshot.val();
                 if (data) {
+                    
                     setActivities(Object.entries(data).map(([key, value]) => ({ ...value, id: key }))); //Tässä kohti haetaan tietokannasta käyttäjän lisäämät aktiviteetit. Niitä luotaessa on luotu aktiviteetti id. Aktiviteetin id pitää saada mukaan tässä, jotta niitä voidaan käsitellä (esim. poistaa) tässä screenissä.
 
                 } else {
@@ -109,6 +111,9 @@ export default function HomeScreen({ route }) {
                     <Card style={styles.card}>
 
                         <Card.Title title={item.activityName} subtitle={`${item.activityDate} Duration: ${item.duration}`} />
+                        <Card.Content>
+                            <Text>{item.description}</Text>
+                        </Card.Content>
                         <Card.Actions>
                             <IconButton icon="trash-can-outline" mode="contained" onPress={() => { setDialogVisible(true); setIdToDelete(item.id); }}></IconButton>
                         </Card.Actions>
@@ -116,6 +121,8 @@ export default function HomeScreen({ route }) {
                     </Card>
                 }
             ></FlatList >
+
+
 
             <Portal>
                 <Dialog visible={dialogVisible} onDismiss={hideDialog}>
@@ -153,7 +160,8 @@ const styles = StyleSheet.create({
     },
     list: {
         width: '100%',
-        paddingHorizontal: '5%'
+        paddingHorizontal: '5%',
+        paddingTop: 10
     },
     card: {
         marginBottom: 10,
