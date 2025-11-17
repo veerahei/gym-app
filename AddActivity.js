@@ -107,7 +107,7 @@ export default function AddActivity() {
                         <TextInput
                             label="Time spent"
                             value={activity.duration}
-                            onChangeText={input => setActivity({ ...activity, duration: input })}
+                            onChangeText={input => setActivity({ ...activity, duration: Number(input) })}
                         />
                         <TextInput
                             label="Notes"

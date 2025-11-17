@@ -1,7 +1,7 @@
 import { View, FlatList, StyleSheet } from "react-native"
 import { Button, Text, Card, IconButton, Portal, Dialog, Snackbar, } from "react-native-paper";
 import { useEffect, useState } from "react";
-import { getDatabase, onValue, ref, remove, off, orderByChild } from "firebase/database";
+import { getDatabase, onValue, ref, remove, off, } from "firebase/database";
 import { app } from './firebaseConfig';
 
 import { useNavigation, useRoute } from "@react-navigation/native";
@@ -47,14 +47,18 @@ export default function HomeScreen({ route }) {
 
         if (currentUser) {  //If user is signed in, show user's own activities
             console.log("Current user löytyi")
-            const activitiesRef = ref(db, `users/${currentUser.uid}/activities/`);
+            const activitiesRef = (ref(db, `users/${currentUser.uid}/activities/`));
             onValue(activitiesRef, (snapshot) => {
                 console.log("On value listener asetettu aktiviteetteihin/datan arvo muuttunut?")
                 const data = snapshot.val();
-                if (data) {
-                    
-                    setActivities(Object.entries(data).map(([key, value]) => ({ ...value, id: key }))); //Tässä kohti haetaan tietokannasta käyttäjän lisäämät aktiviteetit. Niitä luotaessa on luotu aktiviteetti id. Aktiviteetin id pitää saada mukaan tässä, jotta niitä voidaan käsitellä (esim. poistaa) tässä screenissä.
 
+                if (data) {
+                    //Tässä kohti haetaan tietokannasta käyttäjän lisäämät aktiviteetit. Niitä luotaessa on luotu aktiviteetti id. Aktiviteetin id pitää saada mukaan tässä, jotta niitä voidaan käsitellä (esim. poistaa) tässä screenissä.
+                    const items = Object.entries(data).map(([key, value]) => ({ ...value, id: key }));
+                    items.sort((a, b) => new Date(b.activityDate) - new Date(a.activityDate))
+
+                    console.log(items)
+                    setActivities(items)
                 } else {
                     setActivities([]);
                 }
