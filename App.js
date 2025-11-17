@@ -57,8 +57,8 @@ function HomeTabs() {
     >
 
       <Tab.Screen name='MainHome' component={StackNavigator} options={{ headerShown: false, title: "Home" }} />
-      <Tab.Screen name='Search' component={SearchScreen} options={{ headerTitle: (props) => <LogoTitle {...props} />, }} />
-      <Tab.Screen name='Charts' component={ChartScreen} options={{ headerTitle: (props) => <LogoTitle {...props} />, }} />
+      <Tab.Screen name='Search' component={SearchScreen} options={{ headerTitle: (props) => <LogoTitle {...props} />, headerShadowVisible: false}} />
+      <Tab.Screen name='Charts' component={ChartScreen} options={{ headerTitle: (props) => <LogoTitle {...props} />, headerShadowVisible: false }} />
     </Tab.Navigator>
 
   );

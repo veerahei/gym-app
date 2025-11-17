@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { View, StyleSheet, ScrollView } from "react-native"
-import { Text, } from "react-native-paper"
+import { View, StyleSheet, ScrollView, } from "react-native"
+import { Text, Card } from "react-native-paper"
 import { BarChart, PieChart } from 'react-native-chart-kit';
 import { Dimensions } from 'react-native';
 import { getDatabase, ref, onValue, off, } from "firebase/database";
@@ -79,6 +79,7 @@ export default function ChartScreen() {
 
     return (
         <View style={styles.container}>
+
             <Text variant="headlineMedium">Your activity profile</Text>
             <PieChart
                 data={pieChartData}
@@ -98,7 +99,7 @@ export default function ChartScreen() {
                     key={barChartData.labels.join("-")}
                     data={barChartData}
                     width={chartWidth}
-                    height={220}
+                    height={300}
                     chartConfig={{
                         backgroundColor: "#7E57C2",
                         backgroundGradientFrom: "#7E57C2",
@@ -120,6 +121,8 @@ export default function ChartScreen() {
                         marginVertical: 8,
                         //borderRadius: 16
                     }}
+                    fromZero={true}
+                    showValuesOnTopOfBars={true}
                 />
             </ScrollView>
         </View>
@@ -131,8 +134,8 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#fff',
-        //alignItems: 'center',
-
+        alignItems: 'center',
+        paddingTop: 20,
         paddingHorizontal: "2%"
     },
 })

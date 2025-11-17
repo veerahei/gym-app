@@ -3,12 +3,13 @@
 export function getBarchartData(activityList) {
     //console.log("Barchart datanmuokkausfunktiossa")
     //Paljonko aikaa käytetty Lähde: https://www.geeksforgeeks.org/javascript/count-occurrences-of-all-items-in-an-array-in-javascript/
+    //Jaetaan 60 , jotta saadaan minuutit tunneiksi
     let totalTime = activityList.reduce((acc, curr) => {
-        acc[curr.activityName] = (acc[curr.activityName] || 0) + Number(curr.duration);
+        acc[curr.activityName] = (acc[curr.activityName] || 0) + Number(curr.duration / 60);
         return acc;
     }, {})
 
-    //console.log(totalTime)
+    console.log("TOTAL TIME", totalTime)
 
     const chartData = {
         labels: Object.keys(totalTime),
@@ -24,7 +25,7 @@ export function getBarchartData(activityList) {
 
 
 export function getPiechartData(activityList) {
-   // console.log("Piechart datanmuokkausfunktiossa")
+    // console.log("Piechart datanmuokkausfunktiossa")
     //Laske esiintymät. Lähde: https://www.geeksforgeeks.org/javascript/count-occurrences-of-all-items-in-an-array-in-javascript/
     let counts = activityList.reduce((acc, curr) => {
         acc[curr.activityName] = (acc[curr.activityName] || 0) + 1;
