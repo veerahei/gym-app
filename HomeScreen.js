@@ -111,10 +111,11 @@ export default function HomeScreen({ route }) {
             <FlatList
                 style={styles.list}
                 data={activities}
+                ListEmptyComponent={<Text variant="titleSmall" style={{ textAlign: 'center', paddingTop: 20, }}>No activities yet</Text>}
                 renderItem={({ item }) =>
                     <Card style={styles.card}>
 
-                        <Card.Title title={item.activityName} subtitle={`${item.activityDate} Duration: ${item.duration}`} />
+                        <Card.Title title={item.activityName} subtitle={`${item.activityDate}, Duration: ${item.duration} min`} />
                         <Card.Content>
                             <Text>{item.description}</Text>
                         </Card.Content>
@@ -165,7 +166,8 @@ const styles = StyleSheet.create({
     list: {
         width: '100%',
         paddingHorizontal: '5%',
-        paddingTop: 10
+        paddingTop: 10,
+
     },
     card: {
         marginBottom: 10,

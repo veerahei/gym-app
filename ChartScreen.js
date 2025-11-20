@@ -17,6 +17,7 @@ export default function ChartScreen() {
         labels: [],
         datasets: [{ data: [] }]
     });
+    const [activitiesEmpty, setActivitiesEmpty] = useState(true);
 
     const auth = getAuth(app)
     const db = getDatabase(app);
@@ -45,7 +46,7 @@ export default function ChartScreen() {
                 const data = snapshot.val(); let activityList;
                 if (data) {
                     console.log("Data firebasesta löytyi")
-
+                    setActivitiesEmpty(false)
                     activityList = Object.values(data);
 
                     const barchartData = getBarchartData(activityList);
@@ -69,6 +70,12 @@ export default function ChartScreen() {
                     console.log("Chart-sivun aktiviteetit", activityList);
                 } else {
                     console.log("Else haara")
+                    setActivitiesEmpty(true)
+                    setPieChartData([])
+                    setBarChartData({
+                        labels: [],
+                        datasets: [{ data: [] }]
+                    })
                 }
             });
         }
@@ -81,50 +88,55 @@ export default function ChartScreen() {
         <View style={styles.container}>
 
             <Text variant="headlineMedium">Your activity profile</Text>
-            <PieChart
-                data={pieChartData}
-                width={Dimensions.get("window").width} // from react-native
-                height={220}
-                chartConfig={{
-                    color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-                }}
-                accessor={"occurrence"}
-                backgroundColor={"transparent"}
-                paddingLeft={"15"}
-                absolute={false} // Näyttääkö prosentteina vai tod. lukuina
-            />
+            {activitiesEmpty ? <Text variant="titleLarge" style={{ paddingTop: 50, textAlign: 'center', }}>No activities yet.{"\n"}Log your first activity in home screen!</Text> :
+                <View>
+                    <PieChart
+                        data={pieChartData}
+                        width={Dimensions.get("window").width} // from react-native
+                        height={220}
+                        chartConfig={{
+                            color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+                        }}
+                        accessor={"occurrence"}
+                        backgroundColor={"transparent"}
+                        paddingLeft={"15"}
+                        absolute={false} // Näyttääkö prosentteina vai tod. lukuina
+                    />
 
-            <ScrollView horizontal={true}>
-                <BarChart
-                    key={barChartData.labels.join("-")}
-                    data={barChartData}
-                    width={chartWidth}
-                    height={300}
-                    chartConfig={{
-                        backgroundColor: "#7E57C2",
-                        backgroundGradientFrom: "#7E57C2",
-                        backgroundGradientTo: "#7E57C2",
-                        decimalPlaces: 2, // optional, defaults to 2dp
-                        color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-                        labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-                        style: {
-                            borderRadius: 16
-                        },
-                        propsForDots: {
-                            r: "6",
-                            strokeWidth: "2",
-                            stroke: "#ffa726"
-                        }
-                    }}
+                    <ScrollView horizontal={true}>
+                        <BarChart
+                            key={barChartData.labels.join("-")}
+                            data={barChartData}
+                            width={chartWidth}
+                            height={300}
+                            chartConfig={{
+                                backgroundColor: "#7E57C2",
+                                backgroundGradientFrom: "#7E57C2",
+                                backgroundGradientTo: "#7E57C2",
+                                decimalPlaces: 2, // optional, defaults to 2dp
+                                color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+                                labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+                                style: {
+                                    borderRadius: 16
+                                },
+                                propsForDots: {
+                                    r: "6",
+                                    strokeWidth: "2",
+                                    stroke: "#ffa726"
+                                }
+                            }}
 
-                    style={{
-                        marginVertical: 8,
-                        //borderRadius: 16
-                    }}
-                    fromZero={true}
-                    showValuesOnTopOfBars={true}
-                />
-            </ScrollView>
+                            style={{
+                                marginVertical: 8,
+                                //borderRadius: 16
+                            }}
+                            fromZero={true}
+                            showValuesOnTopOfBars={true}
+                        />
+                    </ScrollView>
+                </View>
+            }
+
         </View>
 
     )
