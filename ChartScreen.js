@@ -89,7 +89,8 @@ export default function ChartScreen() {
 
             <Text variant="headlineMedium">Your activity profile</Text>
             {activitiesEmpty ? <Text variant="titleLarge" style={{ paddingTop: 50, textAlign: 'center', }}>No activities yet.{"\n"}Log your first activity in home screen!</Text> :
-                <View>
+                <View style={{paddingTop: 30}}>
+                    <Text variant="titleMedium" style={{textAlign: 'center'}}>Activity Occurrence</Text>
                     <PieChart
                         data={pieChartData}
                         width={Dimensions.get("window").width} // from react-native
@@ -103,6 +104,7 @@ export default function ChartScreen() {
                         absolute={false} // Näyttääkö prosentteina vai tod. lukuina
                     />
 
+                    <Text variant="titleMedium" style={{ textAlign: 'center' }}>Total Time By Activity</Text>
                     <ScrollView horizontal={true}>
                         <BarChart
                             key={barChartData.labels.join("-")}

@@ -6,16 +6,19 @@ export function getBarchartData(activityList) {
     //Jaetaan 60 , jotta saadaan minuutit tunneiksi
     let totalTime = activityList.reduce((acc, curr) => {
         acc[curr.activityName] = (acc[curr.activityName] || 0) + Number(curr.duration / 60);
+        console.log(acc)
         return acc;
     }, {})
 
     console.log("TOTAL TIME", totalTime)
 
+
+
     const chartData = {
         labels: Object.keys(totalTime),
         datasets: [
             {
-                data: Object.values(totalTime),
+                data: Object.values(totalTime).map(number => Math.round(number * 100) / 100),
             },
         ],
     };
