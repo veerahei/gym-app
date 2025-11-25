@@ -2,7 +2,7 @@ import { View, StyleSheet, KeyboardAvoidingView, TouchableWithoutFeedback, Keybo
 import { useState, useEffect } from "react";
 import { TextInput, Button } from "react-native-paper";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
-import { app } from './firebaseConfig';
+import { app } from '../firebaseConfig';
 import { useNavigation } from "@react-navigation/native";
 
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -79,7 +79,7 @@ export default function LoginScreen() {
             <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
                 <View style={styles.container}>
                     <Image
-                        source={require("./assets/FullLogo_Transparent.png")}
+                        source={require("../assets/FullLogo_Transparent.png")}
                         style={{ width: 250, height: 200 }}
                     />
                     <View style={styles.fields}>

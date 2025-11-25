@@ -1,7 +1,7 @@
 import { TextInput, Button, Text, Snackbar } from "react-native-paper"
 import { Alert, View, StyleSheet, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, Platform } from "react-native"
 import { getDatabase, push, ref, } from "firebase/database";
-import { app } from './firebaseConfig';
+import { app } from '../firebaseConfig';
 import { act, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { getAuth } from "firebase/auth";
@@ -10,7 +10,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 
 
 
-export default function AddActivity() {
+export default function AddActivityScreen() {
 
     const [activity, setActivity] = useState({
         activityName: "",

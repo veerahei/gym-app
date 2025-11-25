@@ -1,11 +1,13 @@
 import { View, FlatList, StyleSheet } from "react-native"
-import { Button, Text, Card, IconButton, Portal, Dialog, Snackbar, } from "react-native-paper";
+import { Button, Text, Card, IconButton, Snackbar, } from "react-native-paper";
 import { useEffect, useState } from "react";
 import { getDatabase, onValue, ref, remove, off, } from "firebase/database";
-import { app } from './firebaseConfig';
+import { app } from '../firebaseConfig'
 
-import { useNavigation, useRoute } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import { getAuth, signOut } from "firebase/auth";
+
+import DeleteDialog from "../components/DeleteDialog";
 
 
 export default function HomeScreen({ route }) {
@@ -14,8 +16,6 @@ export default function HomeScreen({ route }) {
     const [idToDelete, setIdToDelete] = useState("");
 
     const [snackbarVisible, setSnackbarVisible] = useState(false);
-
-    const hideDialog = () => setDialogVisible(false);
 
     const db = getDatabase(app);
     const auth = getAuth(app)
@@ -127,17 +127,11 @@ export default function HomeScreen({ route }) {
                 }
             ></FlatList >
 
-
-
-            <Portal>
-                <Dialog visible={dialogVisible} onDismiss={hideDialog}>
-                    <Dialog.Content><Text>Are you sure you want to delete this activity?</Text></Dialog.Content>
-                    <Dialog.Actions>
-                        <Button onPress={() => setDialogVisible(false)}>Cancel</Button>
-                        <Button onPress={() => handleDelete(idToDelete)}>Ok</Button>
-                    </Dialog.Actions>
-                </Dialog>
-            </Portal>
+            <DeleteDialog
+                visible={dialogVisible}
+                onDismiss={() => setDialogVisible(false)}
+                onConfirm={() => handleDelete(idToDelete)}
+            />
 
             <Snackbar
                 visible={snackbarVisible}

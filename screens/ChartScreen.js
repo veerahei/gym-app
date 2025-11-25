@@ -1,13 +1,15 @@
 import { useEffect, useState } from "react";
-import { View, StyleSheet, ScrollView, } from "react-native"
-import { Text, Card } from "react-native-paper"
-import { BarChart, PieChart } from 'react-native-chart-kit';
+import { View, StyleSheet } from "react-native"
+import { Text } from "react-native-paper"
 import { Dimensions } from 'react-native';
-import { getDatabase, ref, onValue, off, } from "firebase/database";
-import { app } from './firebaseConfig';
+import { getDatabase, ref, onValue} from "firebase/database";
+import { app } from '../firebaseConfig';
 import { getAuth } from "firebase/auth";
 
-import { getBarchartData, getPiechartData } from "./ChartData";
+import { getBarchartData, getPiechartData } from "../utils/ChartData";
+
+import ActivityPieChart from "../components/ActivityPieChart";
+import ActivityBarChart from "../components/ActivityBarChart";
 
 
 export default function ChartScreen() {
@@ -81,64 +83,21 @@ export default function ChartScreen() {
         }
     }, []);
 
-
-
-
     return (
         <View style={styles.container}>
-
             <Text variant="headlineMedium">Your activity profile</Text>
-            {activitiesEmpty ? <Text variant="titleLarge" style={{ paddingTop: 50, textAlign: 'center', }}>No activities yet.{"\n"}Log your first activity in home screen!</Text> :
-                <View style={{paddingTop: 30}}>
-                    <Text variant="titleMedium" style={{textAlign: 'center'}}>Activity Occurrence</Text>
-                    <PieChart
-                        data={pieChartData}
-                        width={Dimensions.get("window").width} // from react-native
-                        height={220}
-                        chartConfig={{
-                            color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-                        }}
-                        accessor={"occurrence"}
-                        backgroundColor={"transparent"}
-                        paddingLeft={"15"}
-                        absolute={false} // Näyttääkö prosentteina vai tod. lukuina
-                    />
-
-                    <Text variant="titleMedium" style={{ textAlign: 'center' }}>Total Time By Activity</Text>
-                    <ScrollView horizontal={true}>
-                        <BarChart
-                            key={barChartData.labels.join("-")}
-                            data={barChartData}
-                            width={chartWidth}
-                            height={300}
-                            chartConfig={{
-                                backgroundColor: "#7E57C2",
-                                backgroundGradientFrom: "#7E57C2",
-                                backgroundGradientTo: "#7E57C2",
-                                decimalPlaces: 2, // optional, defaults to 2dp
-                                color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-                                labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-                                style: {
-                                    borderRadius: 16
-                                },
-                                propsForDots: {
-                                    r: "6",
-                                    strokeWidth: "2",
-                                    stroke: "#ffa726"
-                                }
-                            }}
-
-                            style={{
-                                marginVertical: 8,
-                                //borderRadius: 16
-                            }}
-                            fromZero={true}
-                            showValuesOnTopOfBars={true}
-                        />
-                    </ScrollView>
+            {activitiesEmpty ?
+                <Text
+                    variant="titleLarge"
+                    style={{ paddingTop: 50, textAlign: 'center', }}>
+                    No activities yet.{"\n"}Log your first activity in home screen!
+                </Text>
+                :
+                <View style={{ paddingTop: 30 }}>
+                    <ActivityPieChart data={pieChartData} />
+                    <ActivityBarChart data={barChartData} chartWidth={chartWidth} />
                 </View>
             }
-
         </View>
 
     )
