@@ -49,17 +49,40 @@ export default function AddActivityScreen() {
         toggleDatePicker();
     }
 
+
+
     //Save (write) workout plan to database and go back to home screen
     function addActivity() {
         console.log("Uuden aktiviteetin tallennusfunktiossa");
 
-        const currentUser = auth.currentUser;
-        if (currentUser) {
-            push(ref(db, `users/${currentUser.uid}/activities`), activity);
+        //Muuta kesto string numeroksi
+        let minutes = Number(activity.duration)
+        console.log(minutes)
+
+        //Tallenna muuttujaan, jotta voidaan tehdä validointi. Trim poistaa tyhjät merkit alusta ja lopusta
+        let name = activity.activityName.trim()
+        console.log(name)
+
+        if (!name) {
+            Alert.alert("Please enter a name for the activity")
+        } else if (minutes == null || minutes == "" || minutes == 0 || isNaN(minutes)) {
+            Alert.alert("Insert correct duration (minutes)")
 
         }
+        else {
+            //Tehdään erikseen tallennettava muuttuja, joka tallennetaan firebaseen. Ei koiteta tässä välissä päivittää state-muuttujaa, koska ei välttämättä päivity heti.
+            const activityToSave = { ...activity, activityName: name, duration: minutes }
 
-        navigation.popTo('HomeScreen', { added: true });
+            const currentUser = auth.currentUser;
+            if (currentUser) {
+                push(ref(db, `users/${currentUser.uid}/activities`), activityToSave);
+
+            }
+
+            navigation.popTo('HomeScreen', { added: true });
+        }
+
+
     }
 
 
@@ -105,9 +128,9 @@ export default function AddActivityScreen() {
                         )}
 
                         <TextInput
-                            label="Time spent"
+                            label="Time spent (minutes)"
                             value={activity.duration}
-                            onChangeText={input => setActivity({ ...activity, duration: Number(input) })}
+                            onChangeText={input => setActivity({ ...activity, duration: input })}
                         />
                         <TextInput
                             label="Notes"
