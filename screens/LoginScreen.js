@@ -1,12 +1,10 @@
-import { View, StyleSheet, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, Platform, Image, Alert } from "react-native"
+import { View, StyleSheet, TouchableWithoutFeedback, Keyboard, Image, Alert } from "react-native"
 import { useState, useEffect } from "react";
 import { TextInput, Button } from "react-native-paper";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
 import { app } from '../firebaseConfig';
 import { useNavigation } from "@react-navigation/native";
-
 import { SafeAreaView } from 'react-native-safe-area-context';
-
 
 
 export default function LoginScreen() {
@@ -18,7 +16,7 @@ export default function LoginScreen() {
     const auth = getAuth(app);
     const navigation = useNavigation();
 
-    //Tämä kuuntelee kirjautumistilaa kun ollaan Loginscreenissä. Kun käyttäjä kirjautuu sisään, tämä navigoi oikeaan paikkaan. Kun screenistä lähdetään, tätä ei enää kuunneella.
+    
     useEffect(() => {
         console.log("LoginScreenin useEffectissä")
 
@@ -27,11 +25,7 @@ export default function LoginScreen() {
             if (user) {
                 console.log("User on kirjautunut sisään, siirrytään maintabsiin")
                 navigation.replace("MainTabs")
-            } else {
-                console.log("User ei ole kirjautunut sisään")
-                // User is signed out
-                // ...
-            }
+            } 
         })
         return unsubscribe
     }, [])
@@ -59,8 +53,7 @@ export default function LoginScreen() {
     const handleLogin = () => {
         console.log("HandleLogin funktiossa")
         signInWithEmailAndPassword(auth, email, password)
-            .then((userCredential) => {
-                // Signed in 
+            .then((userCredential) => { 
                 const user = userCredential.user;
                 console.log("Signed in", user.email)
             })
@@ -83,7 +76,6 @@ export default function LoginScreen() {
                         style={{ width: 250, height: 200 }}
                     />
                     <View style={styles.fields}>
-
                         <TextInput
                             label="Email address"
                             value={email}
@@ -101,8 +93,8 @@ export default function LoginScreen() {
                         >Login</Button>
                         <Button
                             onPress={handleRegistration}
-                        >Register</Button>
-
+                        >Register
+                        </Button>
                     </View>
                 </View >
             </SafeAreaView>

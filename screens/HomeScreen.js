@@ -3,18 +3,15 @@ import { Button, Text, Card, IconButton, Snackbar, } from "react-native-paper";
 import { useEffect, useState } from "react";
 import { getDatabase, onValue, ref, remove, off, } from "firebase/database";
 import { app } from '../firebaseConfig'
-
 import { useNavigation } from "@react-navigation/native";
 import { getAuth, signOut } from "firebase/auth";
-
 import DeleteDialog from "../components/DeleteDialog";
 
 
 export default function HomeScreen({ route }) {
-    const [activities, setActivities] = useState([]); //User's saved activities
+    const [activities, setActivities] = useState([]); 
     const [dialogVisible, setDialogVisible] = useState(false);
     const [idToDelete, setIdToDelete] = useState("");
-
     const [snackbarVisible, setSnackbarVisible] = useState(false);
 
     const db = getDatabase(app);
@@ -26,8 +23,6 @@ export default function HomeScreen({ route }) {
     console.log("Etusivu renderöity")
     console.log("Kirjautunut käyttäjä: ", currentUser.uid)
 
-
-    //Näytä snackbar uuden aktiviteetin lisäyksen jälkeen
     useEffect(() => {
         if (route.params?.added) {
             setSnackbarVisible(true);
@@ -35,15 +30,14 @@ export default function HomeScreen({ route }) {
         }
     }, [route.params?.added])
 
-    //MIlloin useeffect suoritetaan: Kun sivu avataan ensimmäisen kerran. Kun data refissä muuttuu (tulee lisää tai poistetaan). Kun currentuser arvo muuttuu.
-    //Currentuser haussa voi kestää hetki. Jos user on null, palataan, lopetetaan useEffect ja jatketaan currentuserin hakua. Use effect suoritetaan kun currentuser tila muuttuu, eli saadaan käyttäjän tiedot
+   
     useEffect(() => {
 
         console.log("HOMESCREENIN USEEFFECTISSÄ")
-        if (!currentUser) {
+        /*if (!currentUser) {
             console.log("Current user ei löytynyt")
             return
-        }
+        }*/
 
         if (currentUser) {  //If user is signed in, show user's own activities
             console.log("Current user löytyi")
@@ -53,7 +47,6 @@ export default function HomeScreen({ route }) {
                 const data = snapshot.val();
 
                 if (data) {
-                    //Tässä kohti haetaan tietokannasta käyttäjän lisäämät aktiviteetit. Niitä luotaessa on luotu aktiviteetti id. Aktiviteetin id pitää saada mukaan tässä, jotta niitä voidaan käsitellä (esim. poistaa) tässä screenissä.
                     const items = Object.entries(data).map(([key, value]) => ({ ...value, id: key }));
                     items.sort((a, b) => new Date(b.activityDate) - new Date(a.activityDate))
 
@@ -67,7 +60,6 @@ export default function HomeScreen({ route }) {
     }, []);
 
     useEffect(() => {
-        // Use `setOptions` to update the button that we previously specified
         navigation.setOptions({
             headerRight: () => (
                 <Button onPress={() => handleSignOut()}>Log out</Button>
@@ -78,7 +70,6 @@ export default function HomeScreen({ route }) {
     console.log("Etusivun aktiviteetit:", activities);
 
     const handleSignOut = () => {
-        //Poista kuuntelijat, kun käyttäjä kirjautuu ulos. Muuten tulee päällekkäisiä kuuntelijoita, jos käyttäjä kirjautuu ulos ja takaisin sovellukseen.
         off(ref(db, `users/${currentUser.uid}/activities/`))
         signOut(auth)
             .then(() => (navigation.replace("Login")))
@@ -87,12 +78,11 @@ export default function HomeScreen({ route }) {
 
     const handleDelete = (id) => {
         console.log("in delete")
-
         remove(ref(db, `users/${currentUser.uid}/activities/${id}`))
         setDialogVisible(false)
     }
 
-    //Show user's activities in a list
+  
     return (
         <View style={styles.container}>
             <View style={styles.actions}>

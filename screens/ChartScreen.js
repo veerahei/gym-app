@@ -20,17 +20,14 @@ export default function ChartScreen() {
         datasets: [{ data: [] }]
     });
     const [activitiesEmpty, setActivitiesEmpty] = useState(true);
+    const [chartWidth, setChartWidth] = useState(Dimensions.get("window").width)
 
     const auth = getAuth(app)
     const db = getDatabase(app);
     const currentUser = auth.currentUser;
 
-    //Alusta kaavion leveys näytön leveyden suuruiseksi 
-    const [chartWidth, setChartWidth] = useState(Dimensions.get("window").width)
-
     console.log("KAAVION LEVEYS ONVALUEN ULKOPUOLELLA", chartWidth)
 
-    //Hae data tietokannasta. Tämä suoritetaan aina ja ensimmäisenä, kun käyttäjä avaa Chart-tabin.
     useEffect(() => {
         console.log("CHART SCREENIN USEEFFECTISSÄ")
         if (!currentUser) {
@@ -38,7 +35,6 @@ export default function ChartScreen() {
             return
         }
 
-        //Tarkista että käyttäjä on kirjautunut
         if (currentUser) {
             console.log("Käyttäjä löytyi")
             const activitiesRef = ref(db, `users/${currentUser.uid}/activities`)

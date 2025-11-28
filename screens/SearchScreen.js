@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { View, StyleSheet, FlatList, Image } from "react-native";
-import { Button, Text, TextInput, Card, Searchbar } from "react-native-paper";
+import { Button, Text, Card, Searchbar } from "react-native-paper";
 
 export default function SearchScreen() {
 
@@ -24,7 +24,6 @@ export default function SearchScreen() {
 
     }
 
-
     const handleClearSearch = () => {
         setExercises([]);
         setLatestSearch("");
@@ -33,7 +32,6 @@ export default function SearchScreen() {
     console.log(exercises);
 
     return (
-        
         <View style={styles.container} >
             <Text style={{ paddingTop: 40, paddingBottom: 20 }} variant="titleMedium">Search inspiration for your next workout</Text>
             <Searchbar style={styles.input}

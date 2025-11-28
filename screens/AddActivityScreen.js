@@ -1,14 +1,11 @@
-import { TextInput, Button, Text, Snackbar } from "react-native-paper"
+import { TextInput, Button, Text } from "react-native-paper"
 import { Alert, View, StyleSheet, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, Platform } from "react-native"
 import { getDatabase, push, ref, } from "firebase/database";
 import { app } from '../firebaseConfig';
-import { act, useState } from "react";
+import { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { getAuth } from "firebase/auth";
-
 import DateTimePicker from '@react-native-community/datetimepicker';
-
-
 
 export default function AddActivityScreen() {
 
@@ -18,7 +15,6 @@ export default function AddActivityScreen() {
         duration: "",
         description: ""
     });
-
 
     const [date, setDate] = useState(new Date());
     const [showPicker, setShowPicker] = useState(false);
@@ -32,7 +28,6 @@ export default function AddActivityScreen() {
 
     const toggleDatePicker = () => {
         setShowPicker(!showPicker);
-
     }
 
     const onChange = ({ type }, selectedDate) => {
@@ -50,16 +45,12 @@ export default function AddActivityScreen() {
     }
 
 
-
-    //Save (write) workout plan to database and go back to home screen
     function addActivity() {
         console.log("Uuden aktiviteetin tallennusfunktiossa");
 
-        //Muuta kesto string numeroksi
         let minutes = Number(activity.duration)
         console.log(minutes)
 
-        //Tallenna muuttujaan, jotta voidaan tehdä validointi. Trim poistaa tyhjät merkit alusta ja lopusta
         let name = activity.activityName.trim()
         console.log(name)
 
@@ -67,24 +58,18 @@ export default function AddActivityScreen() {
             Alert.alert("Please enter a name for the activity")
         } else if (minutes == null || minutes == "" || minutes == 0 || isNaN(minutes)) {
             Alert.alert("Insert correct duration (minutes)")
-
         }
         else {
-            //Tehdään erikseen tallennettava muuttuja, joka tallennetaan firebaseen. Ei koiteta tässä välissä päivittää state-muuttujaa, koska ei välttämättä päivity heti.
             const activityToSave = { ...activity, activityName: name, duration: minutes }
 
             const currentUser = auth.currentUser;
             if (currentUser) {
                 push(ref(db, `users/${currentUser.uid}/activities`), activityToSave);
-
             }
 
             navigation.popTo('HomeScreen', { added: true });
         }
-
-
     }
-
 
     return (
         <KeyboardAvoidingView
@@ -145,8 +130,6 @@ export default function AddActivityScreen() {
                     >
                         Save activity
                     </Button>
-
-
                 </View>
             </TouchableWithoutFeedback>
         </KeyboardAvoidingView>
