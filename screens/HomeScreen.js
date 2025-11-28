@@ -20,9 +20,6 @@ export default function HomeScreen({ route }) {
     const navigation = useNavigation();
     const currentUser = auth.currentUser; // Get current user
 
-    console.log("Etusivu renderöity")
-    console.log("Kirjautunut käyttäjä: ", currentUser.uid)
-
     useEffect(() => {
         if (route.params?.added) {
             setSnackbarVisible(true);
@@ -33,24 +30,14 @@ export default function HomeScreen({ route }) {
    
     useEffect(() => {
 
-        console.log("HOMESCREENIN USEEFFECTISSÄ")
-        /*if (!currentUser) {
-            console.log("Current user ei löytynyt")
-            return
-        }*/
-
         if (currentUser) {  //If user is signed in, show user's own activities
-            console.log("Current user löytyi")
             const activitiesRef = (ref(db, `users/${currentUser.uid}/activities/`));
             onValue(activitiesRef, (snapshot) => {
-                console.log("On value listener asetettu aktiviteetteihin/datan arvo muuttunut?")
                 const data = snapshot.val();
 
                 if (data) {
                     const items = Object.entries(data).map(([key, value]) => ({ ...value, id: key }));
                     items.sort((a, b) => new Date(b.activityDate) - new Date(a.activityDate))
-
-                    console.log(items)
                     setActivities(items)
                 } else {
                     setActivities([]);
@@ -67,8 +54,6 @@ export default function HomeScreen({ route }) {
         });
     }, [navigation]);
 
-    console.log("Etusivun aktiviteetit:", activities);
-
     const handleSignOut = () => {
         off(ref(db, `users/${currentUser.uid}/activities/`))
         signOut(auth)
@@ -77,7 +62,6 @@ export default function HomeScreen({ route }) {
     }
 
     const handleDelete = (id) => {
-        console.log("in delete")
         remove(ref(db, `users/${currentUser.uid}/activities/${id}`))
         setDialogVisible(false)
     }

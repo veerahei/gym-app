@@ -23,9 +23,6 @@ export default function AddActivityScreen() {
     const navigation = useNavigation();
     const auth = getAuth(app);
 
-    console.log("Uuden aktiviteetin lisäyssivu renderöityy");
-    console.log(activity)
-
     const toggleDatePicker = () => {
         setShowPicker(!showPicker);
     }
@@ -46,13 +43,9 @@ export default function AddActivityScreen() {
 
 
     function addActivity() {
-        console.log("Uuden aktiviteetin tallennusfunktiossa");
 
         let minutes = Number(activity.duration)
-        console.log(minutes)
-
         let name = activity.activityName.trim()
-        console.log(name)
 
         if (!name) {
             Alert.alert("Please enter a name for the activity")

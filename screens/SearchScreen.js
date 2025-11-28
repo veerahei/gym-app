@@ -29,8 +29,6 @@ export default function SearchScreen() {
         setLatestSearch("");
     }
 
-    console.log(exercises);
-
     return (
         <View style={styles.container} >
             <Text style={{ paddingTop: 40, paddingBottom: 20 }} variant="titleMedium">Search inspiration for your next workout</Text>

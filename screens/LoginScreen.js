@@ -18,12 +18,9 @@ export default function LoginScreen() {
 
     
     useEffect(() => {
-        console.log("LoginScreenin useEffectissä")
 
         const unsubscribe = onAuthStateChanged(auth, (user) => {
-            console.log("Kirjautumistilan kuuntelija lisätty/muutos kirjautumistilassa")
             if (user) {
-                console.log("User on kirjautunut sisään, siirrytään maintabsiin")
                 navigation.replace("MainTabs")
             } 
         })
@@ -31,11 +28,9 @@ export default function LoginScreen() {
     }, [])
 
     const handleRegistration = () => {
-        console.log("In registration")
         createUserWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
                 const user = userCredential.user
-                console.log('Registered with: ', user.email, user.uid)
             })
             .catch((error) => {
                 console.log(error.code, error.message); 
@@ -51,11 +46,9 @@ export default function LoginScreen() {
     }
 
     const handleLogin = () => {
-        console.log("HandleLogin funktiossa")
         signInWithEmailAndPassword(auth, email, password)
             .then((userCredential) => { 
                 const user = userCredential.user;
-                console.log("Signed in", user.email)
             })
             .catch((error) => {
                 console.log(error.code, error.message);

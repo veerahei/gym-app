@@ -26,30 +26,22 @@ export default function ChartScreen() {
     const db = getDatabase(app);
     const currentUser = auth.currentUser;
 
-    console.log("KAAVION LEVEYS ONVALUEN ULKOPUOLELLA", chartWidth)
-
     useEffect(() => {
-        console.log("CHART SCREENIN USEEFFECTISSÄ")
         if (!currentUser) {
-            console.log("Käyttäjää ei löytynyt")
             return
         }
 
         if (currentUser) {
-            console.log("Käyttäjä löytyi")
             const activitiesRef = ref(db, `users/${currentUser.uid}/activities`)
 
             onValue(activitiesRef, (snapshot) => {
-                console.log("Chartscreenin onValue kuuntelijassa")
                 const data = snapshot.val(); let activityList;
                 if (data) {
-                    console.log("Data firebasesta löytyi")
                     setActivitiesEmpty(false)
                     activityList = Object.values(data);
 
                     const barchartData = getBarchartData(activityList);
                     setBarChartData(barchartData);
-                    console.log("Saatu data: ", barchartData)
                     const piechartData = getPiechartData(activityList);
                     setPieChartData(piechartData);
 
@@ -59,15 +51,9 @@ export default function ChartScreen() {
                     } else {
                         newWidth = Dimensions.get("window").width
                     }
-
-                    console.log("Barchartin data: ", barchartData.labels.length * 80)
-                    console.log("Chartwidth: ", newWidth)
                     setChartWidth(newWidth)
 
-
-                    console.log("Chart-sivun aktiviteetit", activityList);
                 } else {
-                    console.log("Else haara")
                     setActivitiesEmpty(true)
                     setPieChartData([])
                     setBarChartData({
