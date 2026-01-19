@@ -3,7 +3,7 @@
 ## About
 Activity Tracker is a mobile app to track user's daily activities. Users can add activities in the app, view them in a list and see statistic based on their activity history. 
 Users can also search workout inspiration by searching training exercises by name, muscles, equipment or body parts, using data from ExerciseDB API. 
-The app is made with React Native, Expo and Firebase Realtime Database and Authentication.
+The app is made with React Native, Expo and Firebase Realtime Database and Authentication. Developed as a final project on mobile programming course.
 
 ## Usage
 Register to the app with email and password. 
